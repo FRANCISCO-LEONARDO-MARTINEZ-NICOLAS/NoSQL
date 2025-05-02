@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {
+    "net9.0": {
       "CouchbaseNetClient/3.7.0": {
         "type": "package",
         "dependencies": {
@@ -531,7 +531,7 @@
       },
       "NoSQL.Application/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
+        "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "NoSQL.Domain": "1.0.0",
           "NoSQL.Infrastructure": "1.0.0"
@@ -545,7 +545,7 @@
       },
       "NoSQL.Domain/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
+        "framework": ".NETCoreApp,Version=v9.0",
         "compile": {
           "bin/placeholder/NoSQL.Domain.dll": {}
         },
@@ -555,7 +555,7 @@
       },
       "NoSQL.Infrastructure/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
+        "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "CouchbaseNetClient": "3.7.0"
         },
@@ -1662,7 +1662,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net8.0": [
+    "net9.0": [
       "Microsoft.AspNetCore.OpenApi >= 8.0.12",
       "NoSQL.Application >= 1.0.0",
       "NoSQL.Domain >= 1.0.0",
@@ -1686,15 +1686,15 @@
         "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net8.0"
+        "net9.0"
       ],
       "sources": {
         "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "targetAlias": "net9.0",
           "projectReferences": {
             "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\NoSQL.Application.csproj": {
               "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\NoSQL.Application.csproj"
@@ -1717,11 +1717,12 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
-      "net8.0": {
-        "targetAlias": "net8.0",
+      "net9.0": {
+        "targetAlias": "net9.0",
         "dependencies": {
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
@@ -1751,7 +1752,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
