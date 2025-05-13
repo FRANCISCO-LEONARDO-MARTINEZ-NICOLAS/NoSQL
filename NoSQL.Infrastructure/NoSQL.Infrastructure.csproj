@@ -10,4 +10,8 @@
     <PackageReference Include="CouchbaseNetClient" Version="3.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NoSQL.Domain\NoSQL.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

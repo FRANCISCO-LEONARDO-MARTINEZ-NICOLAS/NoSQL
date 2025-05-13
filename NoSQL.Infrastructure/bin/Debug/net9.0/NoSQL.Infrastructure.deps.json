@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v9.0": {
       "NoSQL.Infrastructure/1.0.0": {
         "dependencies": {
-          "CouchbaseNetClient": "3.7.0"
+          "CouchbaseNetClient": "3.7.0",
+          "NoSQL.Domain": "1.0.0"
         },
         "runtime": {
           "NoSQL.Infrastructure.dll": {}
@@ -270,7 +271,15 @@
         }
       },
       "System.Memory/4.5.3": {},
-      "System.Text.Json/8.0.5": {}
+      "System.Text.Json/8.0.5": {},
+      "NoSQL.Domain/1.0.0": {
+        "runtime": {
+          "NoSQL.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
     }
   },
   "libraries": {
@@ -467,6 +476,11 @@
       "sha512": "sha512-0f1B50Ss7rqxXiaBJyzUu9bWFOO2/zSlifZ/UNMdiIpDYe4cY4LQQicP4nirK1OS31I43rn062UIJ1Q9bpmHpg==",
       "path": "system.text.json/8.0.5",
       "hashPath": "system.text.json.8.0.5.nupkg.sha512"
+    },
+    "NoSQL.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

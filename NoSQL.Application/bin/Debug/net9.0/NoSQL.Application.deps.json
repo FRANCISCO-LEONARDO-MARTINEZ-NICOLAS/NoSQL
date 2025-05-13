@@ -282,7 +282,8 @@
       },
       "NoSQL.Infrastructure/1.0.0": {
         "dependencies": {
-          "CouchbaseNetClient": "3.7.0"
+          "CouchbaseNetClient": "3.7.0",
+          "NoSQL.Domain": "1.0.0"
         },
         "runtime": {
           "NoSQL.Infrastructure.dll": {

@@ -4,8 +4,8 @@ namespace NoSQL.Domain.Entities
     {
         public Guid Id { get; set; }
         public Guid PacienteId { get; set; }
-        public Guid OptometristaId { get; set; }
-        public DateTime Fecha { get; set; }
-        public string Motivo { get; set; }
+        public DateTime FechaHora { get; set; }
+        public required string Motivo { get; set; }
+        public required string Estado { get; set; }
     }
 }

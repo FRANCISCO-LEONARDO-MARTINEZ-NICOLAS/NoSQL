@@ -422,6 +422,16 @@
         "build": {
           "buildTransitive/net6.0/System.Text.Json.targets": {}
         }
+      },
+      "NoSQL.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/NoSQL.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/NoSQL.Domain.dll": {}
+        }
       }
     }
   },
@@ -1138,11 +1148,17 @@
         "system.text.json.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "NoSQL.Domain/1.0.0": {
+      "type": "project",
+      "path": "../NoSQL.Domain/NoSQL.Domain.csproj",
+      "msbuildProject": "../NoSQL.Domain/NoSQL.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "CouchbaseNetClient >= 3.7.0"
+      "CouchbaseNetClient >= 3.7.0",
+      "NoSQL.Domain >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -1170,7 +1186,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj": {
+              "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
