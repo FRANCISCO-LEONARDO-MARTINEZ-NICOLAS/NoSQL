@@ -8,5 +8,6 @@ namespace NoSQL.Domain.Entities
         public required string Correo { get; set; }
         public required string Telefono { get; set; }
         public DateTime FechaNacimiento { get; set; }
+        public List<HistorialClinico> HistorialClinico { get; set; } = new();
     }
 }

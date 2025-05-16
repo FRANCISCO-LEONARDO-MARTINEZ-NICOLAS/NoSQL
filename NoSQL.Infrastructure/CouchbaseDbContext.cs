@@ -6,19 +6,27 @@ namespace NoSQL.Infrastructure
 {
     public class CouchbaseDbContext
     {
+        private readonly IConfiguration _configuration;
+        private readonly ICluster _cluster;
         private readonly IBucket _bucket;
+
+        public string BucketName { get; }
+        public IBucket Bucket => _bucket;
 
         public CouchbaseDbContext(IConfiguration configuration)
         {
-            // Conectar al clúster de Couchbase
-            var cluster = Cluster.ConnectAsync(
-                configuration["Couchbase:ConnectionString"],
-                configuration["Couchbase:Username"],
-                configuration["Couchbase:Password"]
-            ).Result;
+            _configuration = configuration;
+            
+            var settings = _configuration.GetSection("CouchbaseSettings");
+            BucketName = settings["BucketName"] ?? "OpticaNoSQL";
+            
+            var connectionString = settings["ConnectionString"] ?? "couchbase://localhost";
+            var username = settings["Username"] ?? "Administrator";
+            var password = settings["Password"] ?? "password";
 
-            // Obtener el bucket
-            _bucket = cluster.BucketAsync(configuration["Couchbase:BucketName"]).Result;
+            // Conectar a Couchbase
+            _cluster = Cluster.ConnectAsync(connectionString, username, password).Result;
+            _bucket = _cluster.BucketAsync(BucketName).Result;
         }
 
         // Obtener una colección del bucket

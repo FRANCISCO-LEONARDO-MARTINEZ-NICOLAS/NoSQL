@@ -1,44 +1,42 @@
+using NoSQL.Application.Interfaces;
 using NoSQL.Application.Services;
+using NoSQL.Domain.Interfaces;
 using NoSQL.Infrastructure;
 using NoSQL.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar Couchbase
-builder.Services.AddSingleton<CouchbaseDbContext>();
-
-// Registrar los servicios
-builder.Services.AddScoped<OptometristaService>();
-
-// Registrar el repositorio y servicio de Paciente
-builder.Services.AddScoped<PacienteRepository>();
-builder.Services.AddScoped<PacienteService>();
-
-// Registrar el repositorio y servicio de Cita
-builder.Services.AddScoped<CitaRepository>();
-builder.Services.AddScoped<CitaService>();
-
-// Registrar el repositorio y servicio de Consulta
-builder.Services.AddScoped<ConsultaRepository>();
-builder.Services.AddScoped<ConsultaService>();
-
-// Registrar el repositorio de Optometrista
-builder.Services.AddScoped<OptometristaRepository>();
-
-// Registrar el repositorio y servicio de Producto
-builder.Services.AddScoped<ProductoRepository>();
-builder.Services.AddScoped<ProductoService>();
-
-// Registrar los controladores
+// Add services to the container.
 builder.Services.AddControllers();
-
-// Configurar Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure Couchbase
+builder.Services.AddSingleton<CouchbaseDbContext>();
+
+// Configure Repositories
+builder.Services.AddScoped<IVentaRepository, VentaRepository>();
+builder.Services.AddScoped<INotificacionRepository, NotificacionRepository>();
+
+// Configure Application Services
+builder.Services.AddScoped<IVentaService, VentaService>();
+builder.Services.AddScoped<INotificacionService>(provider =>
+{
+    var configuration = builder.Configuration;
+    var notificacionRepository = provider.GetRequiredService<INotificacionRepository>();
+    
+    return new NotificacionService(
+        notificacionRepository,
+        configuration["SmtpSettings:Server"] ?? "smtp.gmail.com",
+        int.Parse(configuration["SmtpSettings:Port"] ?? "587"),
+        configuration["SmtpSettings:Username"] ?? "",
+        configuration["SmtpSettings:Password"] ?? ""
+    );
+});
+
 var app = builder.Build();
 
-// Configurar el pipeline de solicitudes HTTP
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -46,5 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
