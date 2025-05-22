@@ -1,0 +1,299 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.CLI\\NoSQL.CLI.csproj": {}
+  },
+  "projects": {
+    "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\NoSQL.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\NoSQL.Application.csproj",
+        "projectName": "NoSQL.Application",
+        "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\NoSQL.Application.csproj",
+        "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
+        "outputPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj": {
+                "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj"
+              },
+              "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\NoSQL.Infrastructure.csproj": {
+                "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\NoSQL.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.10.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.CLI\\NoSQL.CLI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.CLI\\NoSQL.CLI.csproj",
+        "projectName": "NoSQL.CLI",
+        "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.CLI\\NoSQL.CLI.csproj",
+        "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
+        "outputPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.CLI\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\NoSQL.Application.csproj": {
+                "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Application\\NoSQL.Application.csproj"
+              },
+              "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj": {
+                "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj"
+              },
+              "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\NoSQL.Infrastructure.csproj": {
+                "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\NoSQL.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj",
+        "projectName": "NoSQL.Domain",
+        "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj",
+        "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
+        "outputPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\NoSQL.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\NoSQL.Infrastructure.csproj",
+        "projectName": "NoSQL.Infrastructure",
+        "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\NoSQL.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
+        "outputPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj": {
+                "projectPath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\NoSQL.Domain\\NoSQL.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "CouchbaseNetClient": {
+              "target": "Package",
+              "version": "[3.7.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

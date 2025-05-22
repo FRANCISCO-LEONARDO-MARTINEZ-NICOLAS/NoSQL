@@ -111,7 +111,7 @@
           "dependencies": {
             "CouchbaseNetClient": {
               "target": "Package",
-              "version": "[3.4.13, )"
+              "version": "[3.7.0, )"
             },
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",

@@ -1,47 +1,85 @@
-using Couchbase.KeyValue;
+using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
 using NoSQL.Infrastructure.Repositories;
-using NoSQL.Infrastructure;
+using NoSQL.Application.Services.Interfaces;
 
 namespace NoSQL.Application.Services
 {
-    public class OptometristaService
+    public class OptometristaService : IOptometristaService
     {
-        private readonly ICouchbaseCollection _collection;
         private readonly OptometristaRepository _repository;
 
-        public OptometristaService(CouchbaseDbContext context, OptometristaRepository repository)
+        public OptometristaService(OptometristaRepository repository)
         {
-            _collection = context.GetCollection("optometristas");
             _repository = repository;
         }
 
-        public async Task<List<Optometrista>> GetAllAsync()
+        public async Task<IEnumerable<Optometrista>> GetAllAsync()
         {
-            var result = await _collection.GetAsync("optometristas");
-            return result.ContentAs<List<Optometrista>>();
+            return await _repository.GetAllAsync();
         }
 
         public async Task<Optometrista?> GetByIdAsync(Guid id)
         {
-            var optometrista = await _repository.GetByIdAsync(id);
-            return optometrista ?? null; // Manejo explícito de nulos
+            return await _repository.GetByIdAsync(id);
         }
 
-        public async Task AddAsync(Optometrista optometrista)
+        public async Task<Optometrista?> GetByEmailAsync(string email)
         {
-            optometrista.Id = Guid.NewGuid();
-            await _collection.InsertAsync(optometrista.Id.ToString(), optometrista);
+            return await _repository.GetByEmailAsync(email);
         }
 
-        public async Task UpdateAsync(Guid id, Optometrista optometrista)
+        public async Task<(bool Success, string Message)> CreateAsync(Optometrista optometrista)
         {
-            await _collection.ReplaceAsync(id.ToString(), optometrista);
+            try
+            {
+                optometrista.Id = Guid.NewGuid();
+                await _repository.AddAsync(optometrista);
+                return (true, "Optometrista creado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al crear optometrista: {ex.Message}");
+            }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<(bool Success, string Message)> UpdateAsync(string email, Optometrista optometrista)
         {
-            await _collection.RemoveAsync(id.ToString());
+            try
+            {
+                var existing = await _repository.GetByEmailAsync(email);
+                if (existing == null)
+                {
+                    return (false, "Optometrista no encontrado");
+                }
+
+                optometrista.Id = existing.Id;
+                await _repository.UpdateAsync(existing.Id, optometrista);
+                return (true, "Optometrista actualizado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al actualizar optometrista: {ex.Message}");
+            }
+        }
+
+        public async Task<(bool Success, string Message)> DeleteAsync(string email)
+        {
+            try
+            {
+                var existing = await _repository.GetByEmailAsync(email);
+                if (existing == null)
+                {
+                    return (false, "Optometrista no encontrado");
+                }
+
+                await _repository.DeleteAsync(existing.Id);
+                return (true, "Optometrista eliminado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al eliminar optometrista: {ex.Message}");
+            }
         }
     }
 }

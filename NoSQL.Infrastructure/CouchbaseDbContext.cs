@@ -12,6 +12,7 @@ namespace NoSQL.Infrastructure
 
         public string BucketName { get; }
         public IBucket Bucket => _bucket;
+        public ICluster Cluster => _cluster;
 
         public CouchbaseDbContext(IConfiguration configuration)
         {
@@ -21,12 +22,18 @@ namespace NoSQL.Infrastructure
             BucketName = settings["BucketName"] ?? "OpticaNoSQL";
             
             var connectionString = settings["ConnectionString"] ?? "couchbase://localhost";
-            var username = settings["Username"] ?? "Administrator";
-            var password = settings["Password"] ?? "password";
+            var username = settings["Username"] ?? "OpticaNoSQL";
+            var password = settings["Password"] ?? "Leo000426";
 
-            // Conectar a Couchbase
-            _cluster = Cluster.ConnectAsync(connectionString, username, password).Result;
-            _bucket = _cluster.BucketAsync(BucketName).Result;
+            var options = new ClusterOptions
+            {
+                UserName = username,
+                Password = password,
+                ConnectionString = connectionString
+            };
+            
+            _cluster = Task.Run(async () => await Couchbase.Cluster.ConnectAsync(connectionString, options)).Result;
+            _bucket = Task.Run(async () => await _cluster.BucketAsync(BucketName)).Result;
         }
 
         // Obtener una colección del bucket

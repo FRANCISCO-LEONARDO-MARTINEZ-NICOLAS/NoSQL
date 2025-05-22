@@ -18,7 +18,7 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<IEnumerable<Notificacion>> GetAllAsync()
         {
-            var query = $"SELECT * FROM {_context.BucketName}.{CollectionName}";
+            var query = $"SELECT n.* FROM `{_context.BucketName}` n WHERE n.type = 'notificacion'";
             var result = await _context.Bucket.Cluster.QueryAsync<Notificacion>(query);
             return await result.ToListAsync();
         }
@@ -39,15 +39,15 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<IEnumerable<Notificacion>> GetByPacienteIdAsync(Guid pacienteId)
         {
-            var query = $"SELECT * FROM {_context.BucketName}.{CollectionName} WHERE pacienteId = $pacienteId";
-            var options = QueryOptions.Create().Parameter("$pacienteId", pacienteId);
+            var query = $"SELECT n.* FROM `{_context.BucketName}` n WHERE n.pacienteId = $pacienteId";
+            var options = QueryOptions.Create().Parameter("pacienteId", pacienteId.ToString());
             var result = await _context.Bucket.Cluster.QueryAsync<Notificacion>(query, options);
             return await result.ToListAsync();
         }
 
         public async Task<IEnumerable<Notificacion>> GetPendientesAsync()
         {
-            var query = $"SELECT * FROM {_context.BucketName}.{CollectionName} WHERE estado = 'Pendiente'";
+            var query = $"SELECT n.* FROM `{_context.BucketName}` n WHERE n.estado = 'Pendiente'";
             var result = await _context.Bucket.Cluster.QueryAsync<Notificacion>(query);
             return await result.ToListAsync();
         }
@@ -70,4 +70,4 @@ namespace NoSQL.Infrastructure.Repositories
                 .RemoveAsync(id.ToString());
         }
     }
-} 
+}

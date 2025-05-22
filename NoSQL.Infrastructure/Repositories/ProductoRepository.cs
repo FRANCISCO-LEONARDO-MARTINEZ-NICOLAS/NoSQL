@@ -1,6 +1,7 @@
 using Couchbase.KeyValue;
 using Couchbase.Core.Exceptions.KeyValue;
 using NoSQL.Domain.Entities;
+using Couchbase.Query;
 
 namespace NoSQL.Infrastructure.Repositories
 {
@@ -15,8 +16,9 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<List<Producto>> GetAllAsync()
         {
-            // Implementa una consulta N1QL si es necesario
-            throw new NotImplementedException("Consulta para obtener todos los productos no implementada.");
+            var query = "SELECT p.* FROM `productos` p";
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Producto>(query);
+            return await result.Rows.ToListAsync();
         }
 
         public async Task<Producto?> GetByIdAsync(Guid id)
@@ -46,6 +48,44 @@ namespace NoSQL.Infrastructure.Repositories
         public async Task DeleteAsync(Guid id)
         {
             await _collection.RemoveAsync(id.ToString());
+        }
+
+        public async Task<IEnumerable<Producto>> GetByPacienteEmailAsync(string pacienteEmail)
+        {
+            var query = $"SELECT p.* FROM `productos` p WHERE p.PacienteEmail = $pacienteEmail";
+            var options = new QueryOptions().Parameter("pacienteEmail", pacienteEmail);
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Producto>(query, options);
+            return await result.Rows.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Producto>> GetByOptometristaEmailAsync(string optometristaEmail)
+        {
+            var query = $"SELECT p.* FROM `productos` p WHERE p.OptometristaEmail = $optometristaEmail";
+            var options = new QueryOptions().Parameter("optometristaEmail", optometristaEmail);
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Producto>(query, options);
+            return await result.Rows.ToListAsync();
+        }
+
+        public async Task UpdateStatusAsync(Guid id, string nuevoEstado)
+        {
+            var producto = await GetByIdAsync(id);
+            if (producto != null)
+            {
+                producto.Estado = nuevoEstado;
+                await UpdateAsync(id, producto);
+            }
+        }
+
+        public async Task UpdateStatusAsync(string id, string nuevoEstado)
+        {
+            if (Guid.TryParse(id, out Guid guidId))
+            {
+                await UpdateStatusAsync(guidId, nuevoEstado);
+            }
+            else
+            {
+                throw new ArgumentException("ID inválido", nameof(id));
+            }
         }
     }
 }

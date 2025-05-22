@@ -1,6 +1,7 @@
 using Couchbase.KeyValue;
 using Couchbase.Core.Exceptions.KeyValue;
 using NoSQL.Domain.Entities;
+using Couchbase.Query;
 
 namespace NoSQL.Infrastructure.Repositories
 {
@@ -15,9 +16,9 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<List<Optometrista>> GetAllAsync()
         {
-            // Aquí puedes implementar una consulta para obtener todos los optometristas
-            // Si estás usando Couchbase, necesitarás una consulta N1QL o similar.
-            throw new NotImplementedException("Consulta para obtener todos los optometristas no implementada.");
+            var query = "SELECT o.* FROM `optometristas` o";
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Optometrista>(query);
+            return await result.Rows.ToListAsync();
         }
 
         public async Task<Optometrista?> GetByIdAsync(Guid id)
@@ -47,6 +48,14 @@ namespace NoSQL.Infrastructure.Repositories
         public async Task DeleteAsync(Guid id)
         {
             await _collection.RemoveAsync(id.ToString());
+        }
+
+        public async Task<Optometrista?> GetByEmailAsync(string email)
+        {
+            var query = $"SELECT o.* FROM `optometristas` o WHERE o.Correo = $email";
+            var options = new Couchbase.Query.QueryOptions().Parameter("email", email);
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Optometrista>(query, options);
+            return await result.Rows.FirstOrDefaultAsync();
         }
     }
 }

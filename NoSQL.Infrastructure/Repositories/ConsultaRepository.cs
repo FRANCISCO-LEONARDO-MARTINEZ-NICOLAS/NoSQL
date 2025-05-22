@@ -1,6 +1,7 @@
 using Couchbase.KeyValue;
 using Couchbase.Core.Exceptions.KeyValue;
 using NoSQL.Domain.Entities;
+using Couchbase.Query;
 
 namespace NoSQL.Infrastructure.Repositories
 {
@@ -15,8 +16,9 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<List<Consulta>> GetAllAsync()
         {
-            var result = await _collection.GetAsync("consultas");
-            return result.ContentAs<List<Consulta>>();
+            var query = "SELECT c.* FROM `consultas` c";
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Consulta>(query);
+            return await result.Rows.ToListAsync();
         }
 
         public async Task<Consulta?> GetByIdAsync(Guid id)
@@ -46,6 +48,38 @@ namespace NoSQL.Infrastructure.Repositories
         public async Task DeleteAsync(Guid id)
         {
             await _collection.RemoveAsync(id.ToString());
+        }
+
+        public async Task<IEnumerable<Consulta>> GetByPacienteEmailAsync(string pacienteEmail)
+        {
+            var query = $"SELECT c.* FROM `consultas` c WHERE c.PacienteEmail = $pacienteEmail";
+            var options = new QueryOptions().Parameter("pacienteEmail", pacienteEmail);
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Consulta>(query, options);
+            return await result.Rows.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Consulta>> GetByOptometristaEmailAsync(string optometristaEmail)
+        {
+            var query = $"SELECT c.* FROM `consultas` c WHERE c.OptometristaEmail = $optometristaEmail";
+            var options = new QueryOptions().Parameter("optometristaEmail", optometristaEmail);
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Consulta>(query, options);
+            return await result.Rows.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Consulta>> GetByPacienteIdAsync(Guid pacienteId)
+        {
+            var query = $"SELECT c.* FROM `consultas` c WHERE c.PacienteId = $pacienteId";
+            var options = new QueryOptions().Parameter("pacienteId", pacienteId.ToString());
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Consulta>(query, options);
+            return await result.Rows.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Consulta>> GetByOptometristaIdAsync(Guid optometristaId)
+        {
+            var query = $"SELECT c.* FROM `consultas` c WHERE c.OptometristaId = $optometristaId";
+            var options = new QueryOptions().Parameter("optometristaId", optometristaId.ToString());
+            var result = await _collection.Scope.Bucket.Cluster.QueryAsync<Consulta>(query, options);
+            return await result.Rows.ToListAsync();
         }
     }
 }
