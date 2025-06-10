@@ -23,12 +23,12 @@ namespace NoSQL.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task<Notificacion?> GetByIdAsync(Guid id)
+        public async Task<Notificacion?> GetByIdAsync(string id)
         {
             try
             {
                 var result = await _context.Bucket.DefaultCollection()
-                    .GetAsync(id.ToString());
+                    .GetAsync(id);
                 return result.ContentAs<Notificacion>();
             }
             catch (DocumentNotFoundException)
@@ -37,10 +37,10 @@ namespace NoSQL.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Notificacion>> GetByPacienteIdAsync(Guid pacienteId)
+        public async Task<IEnumerable<Notificacion>> GetByPacienteIdAsync(string pacienteId)
         {
             var query = $"SELECT n.* FROM `{_context.BucketName}` n WHERE n.pacienteId = $pacienteId";
-            var options = QueryOptions.Create().Parameter("pacienteId", pacienteId.ToString());
+            var options = QueryOptions.Create().Parameter("pacienteId", pacienteId);
             var result = await _context.Bucket.Cluster.QueryAsync<Notificacion>(query, options);
             return await result.ToListAsync();
         }
@@ -55,19 +55,19 @@ namespace NoSQL.Infrastructure.Repositories
         public async Task CreateAsync(Notificacion notificacion)
         {
             await _context.Bucket.DefaultCollection()
-                .InsertAsync(notificacion.Id.ToString(), notificacion);
+                .InsertAsync(notificacion.Id, notificacion);
         }
 
         public async Task UpdateAsync(Notificacion notificacion)
         {
             await _context.Bucket.DefaultCollection()
-                .ReplaceAsync(notificacion.Id.ToString(), notificacion);
+                .ReplaceAsync(notificacion.Id, notificacion);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(string id)
         {
             await _context.Bucket.DefaultCollection()
-                .RemoveAsync(id.ToString());
+                .RemoveAsync(id);
         }
     }
 }

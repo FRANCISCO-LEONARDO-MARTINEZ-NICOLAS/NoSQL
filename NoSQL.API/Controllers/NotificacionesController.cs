@@ -25,7 +25,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<NotificacionResponseDto>> GetById(Guid id)
+        public async Task<ActionResult<NotificacionResponseDto>> GetById(string id)
         {
             var notificacion = await _notificacionService.GetByIdAsync(id);
             if (notificacion == null)
@@ -35,7 +35,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("paciente/{pacienteId}")]
-        public async Task<ActionResult<IEnumerable<NotificacionResponseDto>>> GetByPacienteId(Guid pacienteId)
+        public async Task<ActionResult<IEnumerable<NotificacionResponseDto>>> GetByPacienteId(string pacienteId)
         {
             var notificaciones = await _notificacionService.GetByPacienteIdAsync(pacienteId);
             var response = notificaciones.Select(n => MapToResponseDto(n));
@@ -60,26 +60,29 @@ namespace NoSQL.API.Controllers
                 Mensaje = dto.Mensaje
             };
 
-            var notificacionCreada = await _notificacionService.CreateAsync(notificacion);
-            return CreatedAtAction(nameof(GetById), new { id = notificacionCreada.Id }, MapToResponseDto(notificacionCreada));
+            var (success, message) = await _notificacionService.CreateAsync(notificacion);
+            if (!success)
+                return BadRequest(message);
+
+            return CreatedAtAction(nameof(GetById), new { id = notificacion.Id }, MapToResponseDto(notificacion));
         }
 
         [HttpPost("{id}/enviar")]
-        public async Task<ActionResult> EnviarNotificacion(Guid id)
+        public async Task<ActionResult> EnviarNotificacion(string id)
         {
-            var resultado = await _notificacionService.EnviarNotificacionAsync(id);
-            if (!resultado)
-                return NotFound();
+            var (success, message) = await _notificacionService.EnviarNotificacionAsync(id);
+            if (!success)
+                return NotFound(message);
 
             return NoContent();
         }
 
         [HttpPost("producto-listo")]
-        public async Task<ActionResult> NotificarProductoListo(Guid pacienteId, string nombreProducto)
+        public async Task<ActionResult> NotificarProductoListo(string pacienteId, string nombreProducto)
         {
-            var resultado = await _notificacionService.CrearNotificacionProductoListoAsync(pacienteId, nombreProducto);
-            if (!resultado)
-                return BadRequest("No se pudo enviar la notificación");
+            var (success, message) = await _notificacionService.CrearNotificacionProductoListoAsync(pacienteId, nombreProducto);
+            if (!success)
+                return BadRequest(message);
 
             return NoContent();
         }
@@ -98,4 +101,4 @@ namespace NoSQL.API.Controllers
             };
         }
     }
-} 
+}

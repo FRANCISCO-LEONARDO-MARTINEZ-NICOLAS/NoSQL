@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
 using NoSQL.Domain.Interfaces;
-using NoSQL.Application.Services.Interfaces;
 
 namespace NoSQL.Application.Services
 {
@@ -14,83 +13,170 @@ namespace NoSQL.Application.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IConfiguration _configuration;
+        private readonly INotificacionService _notificacionService;
 
-        public AuthService(IUsuarioRepository usuarioRepository, IConfiguration configuration)
+        public AuthService(
+            IUsuarioRepository usuarioRepository,
+            IConfiguration configuration,
+            INotificacionService notificacionService)
         {
             _usuarioRepository = usuarioRepository;
             _configuration = configuration;
+            _notificacionService = notificacionService;
         }
 
-        public async Task<(bool Success, string Message)> LoginAsync(string email, string password, string role)
+        public async Task<(bool Success, string Message, Usuario? User, string? Token)> LoginAsync(string email, string password, string rol)
         {
             var usuario = await _usuarioRepository.GetByEmailAsync(email);
             if (usuario == null)
-                return (false, "Usuario no encontrado");
-            if (!usuario.Activo)
-                return (false, "Usuario inactivo");
-            if (usuario.Password != password)
-                return (false, "Contraseña incorrecta");
-            if (!string.Equals(usuario.Rol, role, StringComparison.OrdinalIgnoreCase))
-                return (false, "Rol incorrecto");
-            usuario.UltimoAcceso = DateTime.UtcNow;
-            await _usuarioRepository.UpdateAsync(usuario);
-            return (true, "Login exitoso");
-        }
-
-        public async Task<(bool Success, string Message)> RegisterAsync(string email, string password, string role)
-        {
-            if (await _usuarioRepository.ExistsByEmailAsync(email))
-                return (false, "El email ya está registrado");
-            var usuario = new Usuario
             {
-                Email = email,
-                Password = password,
-                Rol = role,
-                FechaCreacion = DateTime.UtcNow,
-                Activo = true,
-                Nombre = email // O pide el nombre en el registro real
-            };
-            await _usuarioRepository.CreateAsync(usuario);
-            return (true, "Usuario registrado exitosamente");
+                return (false, "Usuario no encontrado.", null, null);
+            }
+
+            if (usuario.Rol.ToLower() != rol.ToLower())
+            {
+                return (false, "Rol incorrecto.", null, null);
+            }
+
+            if (!VerifyPassword(password, usuario.PasswordHash))
+            {
+                return (false, "Contraseña incorrecta.", null, null);
+            }
+
+            var token = GenerateJwtToken(usuario);
+            return (true, "Login exitoso.", usuario, token);
         }
 
-        public async Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)
+        public async Task<(bool Success, string Message)> RegisterAsync(Usuario usuario, string password)
         {
-            var usuario = await _usuarioRepository.GetByIdAsync(userId);
+            var existingUser = await _usuarioRepository.GetByEmailAsync(usuario.Correo);
+            if (existingUser != null)
+            {
+                return (false, "El email ya está registrado.");
+            }
+
+            usuario.PasswordHash = HashPassword(password);
+            await _usuarioRepository.AddAsync(usuario);
+
+            // Enviar correo de bienvenida
+            await _notificacionService.EnviarCorreoBienvenidaAsync(usuario.Correo, usuario.Nombre);
+
+            return (true, "Usuario registrado exitosamente.");
+        }
+
+        public async Task<(bool Success, string Message)> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+        {
+            var usuario = await _usuarioRepository.GetByEmailAsync(email);
             if (usuario == null)
-                return false;
+            {
+                return (false, "Usuario no encontrado.");
+            }
 
-            // En un entorno real, deberíamos usar BCrypt o similar para verificar y hashear las contraseñas
-            if (usuario.Password != currentPassword)
-                return false;
+            if (!VerifyPassword(currentPassword, usuario.PasswordHash))
+            {
+                return (false, "Contraseña actual incorrecta.");
+            }
 
-            usuario.Password = newPassword;
-            await _usuarioRepository.UpdateAsync(usuario);
-            return true;
+            usuario.PasswordHash = HashPassword(newPassword);
+            await _usuarioRepository.UpdateAsync(usuario.Id, usuario);
+
+            // Enviar correo de confirmación
+            await _notificacionService.EnviarCorreoCambioPasswordAsync(usuario.Correo, usuario.Nombre);
+
+            return (true, "Contraseña cambiada exitosamente.");
+        }
+
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(string email)
+        {
+            var usuario = await _usuarioRepository.GetByEmailAsync(email);
+            if (usuario == null)
+            {
+                return (false, "Usuario no encontrado.");
+            }
+
+            var newPassword = GenerateRandomPassword();
+            usuario.PasswordHash = HashPassword(newPassword);
+            await _usuarioRepository.UpdateAsync(usuario.Id, usuario);
+
+            // Enviar correo con nueva contraseña
+            await _notificacionService.EnviarCorreoResetPasswordAsync(usuario.Correo, usuario.Nombre, newPassword);
+
+            return (true, "Se ha enviado una nueva contraseña a tu correo electrónico.");
+        }
+
+        public async Task<(bool Success, string Message)> ValidateTokenAsync(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:Key"] ?? throw new InvalidOperationException("JWT Key not found"));
+                
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = _configuration["JwtSettings:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["JwtSettings:Audience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out _);
+
+                return (true, "Token válido.");
+            }
+            catch
+            {
+                return (false, "Token inválido.");
+            }
         }
 
         private string GenerateJwtToken(Usuario usuario)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"] ?? "your-secret-key-min-16-chars"));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            if (string.IsNullOrEmpty(usuario.Id))
+                throw new ArgumentNullException(nameof(usuario.Id), "El Id del usuario no puede ser nulo.");
+            if (string.IsNullOrEmpty(usuario.Correo))
+                throw new ArgumentNullException(nameof(usuario.Correo), "El Correo del usuario no puede ser nulo.");
+            if (string.IsNullOrEmpty(usuario.Rol))
+                throw new ArgumentNullException(nameof(usuario.Rol), "El Rol del usuario no puede ser nulo.");
 
-            var claims = new[]
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:Key"] ?? throw new InvalidOperationException("JWT Key not found"));
+
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Rol),
-                new Claim(ClaimTypes.Name, usuario.Nombre)
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, usuario.Id),
+                    new Claim(ClaimTypes.Email, usuario.Correo),
+                    new Claim(ClaimTypes.Role, usuario.Rol)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configuration["JwtSettings:Issuer"],
+                Audience = _configuration["JwtSettings:Audience"]
             };
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JwtSettings:Issuer"] ?? "OpticaNoSQL",
-                audience: _configuration["JwtSettings:Audience"] ?? "OpticaNoSQL",
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(8),
-                signingCredentials: credentials
-            );
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+        private string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        private bool VerifyPassword(string password, string hash)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hash);
+        }
+
+        private string GenerateRandomPassword()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, 12)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
-} 
+}

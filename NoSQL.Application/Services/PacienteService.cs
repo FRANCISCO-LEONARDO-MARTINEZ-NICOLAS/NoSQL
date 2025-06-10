@@ -1,15 +1,14 @@
 using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
-using NoSQL.Infrastructure.Repositories;
-using NoSQL.Application.Services.Interfaces;
+using NoSQL.Domain.Interfaces;
 
 namespace NoSQL.Application.Services
 {
     public class PacienteService : IPacienteService
     {
-        private readonly PacienteRepository _repository;
+        private readonly IPacienteRepository _repository;
 
-        public PacienteService(PacienteRepository repository)
+        public PacienteService(IPacienteRepository repository)
         {
             _repository = repository;
         }
@@ -19,14 +18,14 @@ namespace NoSQL.Application.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<Paciente?> GetByIdAsync(Guid id)
+        public async Task<Paciente?> GetByIdAsync(string id)
         {
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<Paciente?> GetByEmailAsync(string email)
+        public async Task<Paciente?> GetByEmailAsync(string correo)
         {
-            return await _repository.GetByEmailAsync(email);
+            return await _repository.GetByEmailAsync(correo);
         }
 
         public async Task<Paciente?> GetByDniAsync(string dni)
@@ -38,7 +37,7 @@ namespace NoSQL.Application.Services
         {
             try
             {
-                paciente.Id = Guid.NewGuid();
+                paciente.Id = Guid.NewGuid().ToString();
                 await _repository.AddAsync(paciente);
                 return (true, "Paciente creado exitosamente");
             }
@@ -48,23 +47,39 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> UpdateAsync(string email, Paciente paciente)
+        public async Task<(bool Success, string Message)> UpdateAsync(string id, Paciente paciente)
         {
-            var existing = await _repository.GetByEmailAsync(email);
-            if (existing == null)
-                return (false, "Paciente no encontrado");
-            paciente.Id = existing.Id;
-            await _repository.UpdateAsync(existing.Id, paciente);
-            return (true, "Paciente actualizado exitosamente");
+            try
+            {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Paciente no encontrado");
+
+                paciente.Id = id;
+                await _repository.UpdateAsync(id, paciente);
+                return (true, "Paciente actualizado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al actualizar paciente: {ex.Message}");
+            }
         }
 
-        public async Task<(bool Success, string Message)> DeleteAsync(string email)
+        public async Task<(bool Success, string Message)> DeleteAsync(string id)
         {
-            var existing = await _repository.GetByEmailAsync(email);
-            if (existing == null)
-                return (false, "Paciente no encontrado");
-            await _repository.DeleteAsync(existing.Id);
-            return (true, "Paciente eliminado exitosamente");
+            try
+            {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Paciente no encontrado");
+
+                await _repository.DeleteAsync(id);
+                return (true, "Paciente eliminado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al eliminar paciente: {ex.Message}");
+            }
         }
     }
 }

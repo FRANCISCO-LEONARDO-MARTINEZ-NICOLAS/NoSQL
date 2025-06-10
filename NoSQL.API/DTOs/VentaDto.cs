@@ -2,8 +2,8 @@ namespace NoSQL.API.DTOs
 {
     public class CrearVentaDto
     {
-        public required Guid PacienteId { get; set; }
-        public required Guid OptometristaId { get; set; }
+        public required string PacienteId { get; set; }
+        public required string OptometristaId { get; set; }
         public required string MetodoPago { get; set; }
         public List<CrearProductoVentaDto> Productos { get; set; } = new();
     }
@@ -22,9 +22,9 @@ namespace NoSQL.API.DTOs
 
     public class VentaResponseDto
     {
-        public Guid Id { get; set; }
-        public Guid PacienteId { get; set; }
-        public Guid OptometristaId { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string PacienteId { get; set; } = string.Empty;
+        public string OptometristaId { get; set; } = string.Empty;
         public DateTime Fecha { get; set; }
         public decimal MontoTotal { get; set; }
         public string MetodoPago { get; set; } = string.Empty;

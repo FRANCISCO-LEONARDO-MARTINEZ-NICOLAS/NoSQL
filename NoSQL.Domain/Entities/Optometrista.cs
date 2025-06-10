@@ -2,7 +2,7 @@ namespace NoSQL.Domain.Entities
 {
     public class Optometrista
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public required string Nombre { get; set; }
         public required string Apellido { get; set; }
         public required string CedulaProfesional { get; set; }
@@ -12,5 +12,10 @@ namespace NoSQL.Domain.Entities
         public required string NumeroEmergencia { get; set; }
         public string? Telefono { get; set; }
         public string? Direccion { get; set; }
+
+        // Agrega estas propiedades:
+        public DateTime FechaContratacion { get; set; } = DateTime.UtcNow;
+        public bool Activo { get; set; } = true;
+        public string type { get; set; } = "Optometrista";
     }
 }

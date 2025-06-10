@@ -8,13 +8,15 @@
     ".NETCoreApp,Version=v8.0": {
       "NoSQL.Infrastructure/1.0.0": {
         "dependencies": {
-          "CouchbaseNetClient": "3.7.0"
+          "CouchbaseNetClient": "3.7.1",
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "NoSQL.Domain": "1.0.0"
         },
         "runtime": {
           "NoSQL.Infrastructure.dll": {}
         }
       },
-      "CouchbaseNetClient/3.7.0": {
+      "CouchbaseNetClient/3.7.1": {
         "dependencies": {
           "DnsClient": "1.8.0",
           "Google.Api.CommonProtos": "2.13.0",
@@ -32,8 +34,8 @@
         },
         "runtime": {
           "lib/net8.0/Couchbase.NetClient.dll": {
-            "assemblyVersion": "3.7.0.0",
-            "fileVersion": "3.7.0.0"
+            "assemblyVersion": "3.7.1.0",
+            "fileVersion": "3.7.1.0"
           }
         }
       },
@@ -120,7 +122,7 @@
       },
       "Microsoft.Extensions.Configuration/3.0.3": {
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "3.0.3"
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0"
         },
         "runtime": {
           "lib/netcoreapp3.0/Microsoft.Extensions.Configuration.dll": {
@@ -129,14 +131,14 @@
           }
         }
       },
-      "Microsoft.Extensions.Configuration.Abstractions/3.0.3": {
+      "Microsoft.Extensions.Configuration.Abstractions/8.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "3.0.3"
+          "Microsoft.Extensions.Primitives": "8.0.0"
         },
         "runtime": {
-          "lib/netcoreapp3.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
-            "assemblyVersion": "3.0.3.0",
-            "fileVersion": "3.0.320.7202"
+          "lib/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
           }
         }
       },
@@ -216,7 +218,7 @@
       "Microsoft.Extensions.Options/3.0.3": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.0.3",
-          "Microsoft.Extensions.Primitives": "3.0.3"
+          "Microsoft.Extensions.Primitives": "8.0.0"
         },
         "runtime": {
           "lib/netcoreapp3.0/Microsoft.Extensions.Options.dll": {
@@ -225,11 +227,11 @@
           }
         }
       },
-      "Microsoft.Extensions.Primitives/3.0.3": {
+      "Microsoft.Extensions.Primitives/8.0.0": {
         "runtime": {
-          "lib/netcoreapp3.0/Microsoft.Extensions.Primitives.dll": {
-            "assemblyVersion": "3.0.3.0",
-            "fileVersion": "3.0.320.7202"
+          "lib/net8.0/Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
           }
         }
       },
@@ -277,7 +279,15 @@
         }
       },
       "System.Memory/4.5.3": {},
-      "System.Text.Json/8.0.5": {}
+      "System.Text.Json/8.0.5": {},
+      "NoSQL.Domain/1.0.0": {
+        "runtime": {
+          "NoSQL.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
     }
   },
   "libraries": {
@@ -286,12 +296,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "CouchbaseNetClient/3.7.0": {
+    "CouchbaseNetClient/3.7.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-S6uRBeniDj+I5C1usssU+/KrVU8DVw9lHZGW8wh0zS2qAS7dOpMolVAq1PSr/bb6OPOT3FjZsd8Dz5UZ7h2d1A==",
-      "path": "couchbasenetclient/3.7.0",
-      "hashPath": "couchbasenetclient.3.7.0.nupkg.sha512"
+      "sha512": "sha512-rUM4HmAAvIlfPOppdxWw3q4vEkcGpZuiFYWUA7NQH2xJoDVevxChdkyWLC4BUiXhMJtxocMaCuxgDipPt2BEbA==",
+      "path": "couchbasenetclient/3.7.1",
+      "hashPath": "couchbasenetclient.3.7.1.nupkg.sha512"
     },
     "DnsClient/1.8.0": {
       "type": "package",
@@ -356,12 +366,12 @@
       "path": "microsoft.extensions.configuration/3.0.3",
       "hashPath": "microsoft.extensions.configuration.3.0.3.nupkg.sha512"
     },
-    "Microsoft.Extensions.Configuration.Abstractions/3.0.3": {
+    "Microsoft.Extensions.Configuration.Abstractions/8.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ND+ka7njp3HgVJCVn0YgpuxbFWBOCkcQaK+UBGJNseDhjz6I/qpXmCqLK+nXSzxU7cdscFWnUJS6wjEEEkMvSQ==",
-      "path": "microsoft.extensions.configuration.abstractions/3.0.3",
-      "hashPath": "microsoft.extensions.configuration.abstractions.3.0.3.nupkg.sha512"
+      "sha512": "sha512-3lE/iLSutpgX1CC0NOW70FJoGARRHbyKmG7dc0klnUZ9Dd9hS6N/POPWhKhMLCEuNN5nXEY5agmlFtH562vqhQ==",
+      "path": "microsoft.extensions.configuration.abstractions/8.0.0",
+      "hashPath": "microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration.Binder/3.0.3": {
       "type": "package",
@@ -419,12 +429,12 @@
       "path": "microsoft.extensions.options/3.0.3",
       "hashPath": "microsoft.extensions.options.3.0.3.nupkg.sha512"
     },
-    "Microsoft.Extensions.Primitives/3.0.3": {
+    "Microsoft.Extensions.Primitives/8.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-eJuAFVIH9zUZ7j7tCSbJD+tS0dueENIerwoGxFL8RYqCmbEqQ7wVOG+mt2mZAbEpnMPsGl1Fc/HIhWpB9ftwhg==",
-      "path": "microsoft.extensions.primitives/3.0.3",
-      "hashPath": "microsoft.extensions.primitives.3.0.3.nupkg.sha512"
+      "sha512": "sha512-bXJEZrW9ny8vjMF1JV253WeLhpEVzFo1lyaZu1vQ4ZxWUlVvknZ/+ftFgVheLubb4eZPSwwxBeqS1JkCOjxd8g==",
+      "path": "microsoft.extensions.primitives/8.0.0",
+      "hashPath": "microsoft.extensions.primitives.8.0.0.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.3": {
       "type": "package",
@@ -474,6 +484,11 @@
       "sha512": "sha512-0f1B50Ss7rqxXiaBJyzUu9bWFOO2/zSlifZ/UNMdiIpDYe4cY4LQQicP4nirK1OS31I43rn062UIJ1Q9bpmHpg==",
       "path": "system.text.json/8.0.5",
       "hashPath": "system.text.json.8.0.5.nupkg.sha512"
+    },
+    "NoSQL.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

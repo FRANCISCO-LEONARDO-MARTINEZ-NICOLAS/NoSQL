@@ -23,12 +23,12 @@ namespace NoSQL.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task<Venta?> GetByIdAsync(Guid id)
+        public async Task<Venta?> GetByIdAsync(string id)
         {
             try
             {
                 var result = await _context.Bucket.DefaultCollection()
-                    .GetAsync(id.ToString());
+                    .GetAsync(id);
                 return result.ContentAs<Venta>();
             }
             catch (DocumentNotFoundException)
@@ -37,18 +37,18 @@ namespace NoSQL.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Venta>> GetByPacienteIdAsync(Guid pacienteId)
+        public async Task<IEnumerable<Venta>> GetByPacienteIdAsync(string pacienteId)
         {
             var query = $"SELECT v.* FROM `{_context.BucketName}` v WHERE v.pacienteId = $pacienteId";
-            var options = QueryOptions.Create().Parameter("pacienteId", pacienteId.ToString());
+            var options = QueryOptions.Create().Parameter("pacienteId", pacienteId);
             var result = await _context.Bucket.Cluster.QueryAsync<Venta>(query, options);
             return await result.ToListAsync();
         }
 
-        public async Task<IEnumerable<Venta>> GetByOptometristaIdAsync(Guid optometristaId)
+        public async Task<IEnumerable<Venta>> GetByOptometristaIdAsync(string optometristaId)
         {
             var query = $"SELECT v.* FROM `{_context.BucketName}` v WHERE v.optometristaId = $optometristaId";
-            var options = QueryOptions.Create().Parameter("optometristaId", optometristaId.ToString());
+            var options = QueryOptions.Create().Parameter("optometristaId", optometristaId);
             var result = await _context.Bucket.Cluster.QueryAsync<Venta>(query, options);
             return await result.ToListAsync();
         }
@@ -56,19 +56,19 @@ namespace NoSQL.Infrastructure.Repositories
         public async Task CreateAsync(Venta venta)
         {
             await _context.Bucket.DefaultCollection()
-                .InsertAsync(venta.Id.ToString(), venta);
+                .InsertAsync(venta.Id, venta);
         }
 
         public async Task UpdateAsync(Venta venta)
         {
             await _context.Bucket.DefaultCollection()
-                .ReplaceAsync(venta.Id.ToString(), venta);
+                .ReplaceAsync(venta.Id, venta);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(string id)
         {
             await _context.Bucket.DefaultCollection()
-                .RemoveAsync(id.ToString());
+                .RemoveAsync(id);
         }
     }
 }

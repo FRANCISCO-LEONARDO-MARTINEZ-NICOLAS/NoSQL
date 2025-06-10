@@ -1,15 +1,14 @@
 using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
-using NoSQL.Infrastructure.Repositories;
-using NoSQL.Application.Services.Interfaces;
+using NoSQL.Domain.Interfaces;
 
 namespace NoSQL.Application.Services
 {
     public class OptometristaService : IOptometristaService
     {
-        private readonly OptometristaRepository _repository;
+        private readonly IOptometristaRepository _repository;
 
-        public OptometristaService(OptometristaRepository repository)
+        public OptometristaService(IOptometristaRepository repository)
         {
             _repository = repository;
         }
@@ -19,21 +18,16 @@ namespace NoSQL.Application.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<Optometrista?> GetByIdAsync(Guid id)
+        public async Task<Optometrista?> GetByIdAsync(string id)
         {
             return await _repository.GetByIdAsync(id);
-        }
-
-        public async Task<Optometrista?> GetByEmailAsync(string email)
-        {
-            return await _repository.GetByEmailAsync(email);
         }
 
         public async Task<(bool Success, string Message)> CreateAsync(Optometrista optometrista)
         {
             try
             {
-                optometrista.Id = Guid.NewGuid();
+                optometrista.Id = Guid.NewGuid().ToString();
                 await _repository.AddAsync(optometrista);
                 return (true, "Optometrista creado exitosamente");
             }
@@ -43,18 +37,15 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> UpdateAsync(string email, Optometrista optometrista)
+        public async Task<(bool Success, string Message)> UpdateAsync(string id, Optometrista optometrista)
         {
             try
             {
-                var existing = await _repository.GetByEmailAsync(email);
+                var existing = await _repository.GetByIdAsync(id);
                 if (existing == null)
-                {
                     return (false, "Optometrista no encontrado");
-                }
-
-                optometrista.Id = existing.Id;
-                await _repository.UpdateAsync(existing.Id, optometrista);
+                optometrista.Id = id;
+                await _repository.UpdateAsync(id, optometrista);
                 return (true, "Optometrista actualizado exitosamente");
             }
             catch (Exception ex)
@@ -63,17 +54,14 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> DeleteAsync(string email)
+        public async Task<(bool Success, string Message)> DeleteAsync(string id)
         {
             try
             {
-                var existing = await _repository.GetByEmailAsync(email);
+                var existing = await _repository.GetByIdAsync(id);
                 if (existing == null)
-                {
                     return (false, "Optometrista no encontrado");
-                }
-
-                await _repository.DeleteAsync(existing.Id);
+                await _repository.DeleteAsync(id);
                 return (true, "Optometrista eliminado exitosamente");
             }
             catch (Exception ex)

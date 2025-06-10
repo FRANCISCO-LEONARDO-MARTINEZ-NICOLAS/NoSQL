@@ -11,3 +11,5 @@ build_property.RootNamespace = NoSQL.Domain
 build_property.ProjectDir = D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Domain\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 

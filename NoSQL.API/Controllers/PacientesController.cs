@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using NoSQL.Application.Services;
+using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
 
 namespace NoSQL.API.Controllers
@@ -8,9 +8,9 @@ namespace NoSQL.API.Controllers
     [Route("api/[controller]")]
     public class PacientesController : ControllerBase
     {
-        private readonly PacienteService _service;
+        private readonly IPacienteService _service;
 
-        public PacientesController(PacienteService service)
+        public PacientesController(IPacienteService service)
         {
             _service = service;
         }
@@ -23,9 +23,29 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var paciente = await _service.GetByIdAsync(id);
+            if (paciente == null)
+                return NotFound();
+
+            return Ok(paciente);
+        }
+
+        [HttpGet("email/{correo}")]
+        public async Task<IActionResult> GetByEmail(string correo)
+        {
+            var paciente = await _service.GetByEmailAsync(correo);
+            if (paciente == null)
+                return NotFound();
+
+            return Ok(paciente);
+        }
+
+        [HttpGet("dni/{dni}")]
+        public async Task<IActionResult> GetByDni(string dni)
+        {
+            var paciente = await _service.GetByDniAsync(dni);
             if (paciente == null)
                 return NotFound();
 
@@ -35,21 +55,30 @@ namespace NoSQL.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Paciente paciente)
         {
-            await _service.AddAsync(paciente);
+            var (success, message) = await _service.CreateAsync(paciente);
+            if (!success)
+                return BadRequest(message);
+
             return CreatedAtAction(nameof(GetById), new { id = paciente.Id }, paciente);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Paciente paciente)
+        public async Task<IActionResult> Put(string id, [FromBody] Paciente paciente)
         {
-            await _service.UpdateAsync(id, paciente);
+            var (success, message) = await _service.UpdateAsync(id, paciente);
+            if (!success)
+                return BadRequest(message);
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
-            await _service.DeleteAsync(id);
+            var (success, message) = await _service.DeleteAsync(id);
+            if (!success)
+                return BadRequest(message);
+
             return NoContent();
         }
     }

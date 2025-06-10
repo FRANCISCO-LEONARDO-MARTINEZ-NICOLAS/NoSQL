@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using NoSQL.Application.Services.Interfaces;
+using System.Linq;
+using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
 
 namespace NoSQL.CLI.Menus
@@ -9,159 +9,259 @@ namespace NoSQL.CLI.Menus
     public class OptometristaManagementMenu : BaseMenu
     {
         private readonly IOptometristaService _optometristaService;
+        private readonly string _userEmail;
+        private readonly string _userRole;
 
-        public OptometristaManagementMenu(IServiceProvider serviceProvider, string currentUserEmail, string currentUserRole)
-            : base(serviceProvider, currentUserEmail, currentUserRole)
+        public OptometristaManagementMenu(
+            IOptometristaService optometristaService,
+            string userEmail,
+            string userRole)
         {
-            _optometristaService = serviceProvider.GetRequiredService<IOptometristaService>();
-        }
-
-        public async Task HandleOptionAsync(string option)
-        {
-            switch (option)
-            {
-                case "1":
-                    await AddOptometrista();
-                    break;
-                case "2":
-                    await DeleteOptometrista();
-                    break;
-                case "3":
-                    await ModifyOptometrista();
-                    break;
-                case "4":
-                    await ListOptometristas();
-                    break;
-            }
-        }
-
-        private async Task AddOptometrista()
-        {
-            ClearScreen();
-            ShowHeader("Agregar Optometrista");
-
-            var optometrista = new Optometrista
-            {
-                Nombre = GetUserInput("Nombre: "),
-                Apellido = GetUserInput("Apellido: "),
-                CedulaProfesional = GetUserInput("Cédula Profesional: "),
-                Especialidad = GetUserInput("Especialidad: "),
-                Correo = GetUserInput("Correo: "),
-                Telefono = GetUserInput("Teléfono: "),
-                Celular = GetUserInput("Celular: "),
-                NumeroEmergencia = GetUserInput("Número de Emergencia: ")
-            };
-
-            var result = await _optometristaService.CreateAsync(optometrista);
-            if (result.Success)
-            {
-                ShowSuccess(result.Message);
-            }
-            else
-            {
-                ShowError(result.Message);
-            }
-
-            ShowFooter();
-        }
-
-        private async Task DeleteOptometrista()
-        {
-            ClearScreen();
-            ShowHeader("Eliminar Optometrista");
-
-            string email = GetUserInput("Correo del optometrista a eliminar: ");
-            var result = await _optometristaService.DeleteAsync(email);
-
-            if (result.Success)
-            {
-                ShowSuccess(result.Message);
-            }
-            else
-            {
-                ShowError(result.Message);
-            }
-
-            ShowFooter();
-        }
-
-        private async Task ModifyOptometrista()
-        {
-            ClearScreen();
-            ShowHeader("Modificar Optometrista");
-
-            string email = GetUserInput("Correo del optometrista a modificar: ");
-            var existing = await _optometristaService.GetByEmailAsync(email);
-
-            if (existing == null)
-            {
-                ShowError("Optometrista no encontrado");
-                ShowFooter();
-                return;
-            }
-
-            var optometrista = new Optometrista
-            {
-                Nombre = GetUserInput($"Nombre ({existing.Nombre}): ") ?? existing.Nombre,
-                Apellido = GetUserInput($"Apellido ({existing.Apellido}): ") ?? existing.Apellido,
-                CedulaProfesional = GetUserInput($"Cédula Profesional ({existing.CedulaProfesional}): ") ?? existing.CedulaProfesional,
-                Especialidad = GetUserInput($"Especialidad ({existing.Especialidad}): ") ?? existing.Especialidad,
-                Correo = GetUserInput($"Correo ({existing.Correo}): ") ?? existing.Correo,
-                Telefono = GetUserInput($"Teléfono ({existing.Telefono}): ") ?? existing.Telefono,
-                Celular = GetUserInput($"Celular ({existing.Celular}): ") ?? existing.Celular,
-                NumeroEmergencia = GetUserInput($"Número de Emergencia ({existing.NumeroEmergencia}): ") ?? existing.NumeroEmergencia
-            };
-
-            var result = await _optometristaService.UpdateAsync(email, optometrista);
-            if (result.Success)
-            {
-                ShowSuccess(result.Message);
-            }
-            else
-            {
-                ShowError(result.Message);
-            }
-
-            ShowFooter();
-        }
-
-        private async Task ListOptometristas()
-        {
-            ClearScreen();
-            ShowHeader("Lista de Optometristas");
-
-            var optometristas = await _optometristaService.GetAllAsync();
-            foreach (var opt in optometristas)
-            {
-                Console.WriteLine($"\nNombre: {opt.Nombre}");
-                Console.WriteLine($"Cédula: {opt.CedulaProfesional}");
-                Console.WriteLine($"Especialidad: {opt.Especialidad}");
-                Console.WriteLine($"Correo: {opt.Correo}");
-                Console.WriteLine($"Teléfono: {opt.Telefono}");
-                Console.WriteLine(new string('-', 40));
-            }
-
-            ShowFooter();
+            _optometristaService = optometristaService;
+            _userEmail = userEmail;
+            _userRole = userRole;
         }
 
         public override async Task ShowAsync()
         {
             while (true)
             {
-                ClearScreen();
-                ShowHeader("Gestión de Optometristas");
-                Console.WriteLine("1. Agregar Optometrista");
-                Console.WriteLine("2. Eliminar Optometrista");
-                Console.WriteLine("3. Modificar Optometrista");
-                Console.WriteLine("4. Consultar Optometristas");
-                Console.WriteLine("5. Volver al menú principal");
-                Console.Write("\nSeleccione una opción: ");
+                Console.Clear();
+                Console.WriteLine("=== Gestión de Optometristas ===\n");
+                Console.WriteLine("1. Ver todos los optometristas");
+                Console.WriteLine("2. Buscar optometrista por nombre");
+                Console.WriteLine("3. Registrar nuevo optometrista");
+                Console.WriteLine("4. Actualizar optometrista");
+                Console.WriteLine("0. Volver al menú principal");
 
-                string option = Console.ReadLine();
-                if (option == "5") break;
+                var opcion = Console.ReadLine()?.Trim();
 
-                await HandleOptionAsync(option);
+                switch (opcion)
+                {
+                    case "1":
+                        await MostrarTodosLosOptometristasAsync();
+                        break;
+                    case "2":
+                        await BuscarOptometristaPorNombreAsync();
+                        break;
+                    case "3":
+                        await RegistrarOptometristaAsync();
+                        break;
+                    case "4":
+                        await ActualizarOptometristaAsync();
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("\nOpción no válida. Presione cualquier tecla para continuar...");
+                        Console.ReadKey();
+                        break;
+                }
             }
         }
+
+        private async Task MostrarTodosLosOptometristasAsync()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Todos los Optometristas ===\n");
+
+            var optometristas = await _optometristaService.GetAllAsync();
+            if (optometristas == null || !optometristas.Any())
+            {
+                Console.WriteLine("No hay optometristas registrados.");
+            }
+            else
+            {
+                foreach (var optometrista in optometristas)
+                {
+                    Console.WriteLine($"ID: {optometrista.Id}");
+                    Console.WriteLine($"Nombre: {optometrista.Nombre} {optometrista.Apellido}");
+                    Console.WriteLine($"Cédula: {optometrista.CedulaProfesional}");
+                    Console.WriteLine($"Especialidad: {optometrista.Especialidad}");
+                    Console.WriteLine($"Correo: {optometrista.Correo}");
+                    Console.WriteLine($"Celular: {optometrista.Celular}");
+                    Console.WriteLine($"Emergencia: {optometrista.NumeroEmergencia}");
+                    Console.WriteLine($"Teléfono: {optometrista.Telefono}");
+                    Console.WriteLine($"Dirección: {optometrista.Direccion}");
+                    Console.WriteLine("------------------------");
+                }
+            }
+
+            Console.WriteLine("\nPresione cualquier tecla para continuar...");
+            Console.ReadKey();
+        }
+
+        private async Task BuscarOptometristaPorNombreAsync()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Buscar Optometrista por Nombre ===\n");
+
+            Console.Write("Nombre del optometrista: ");
+            var nombre = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(nombre))
+            {
+                Console.WriteLine("\nNombre requerido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            var optometristas = await _optometristaService.GetAllAsync();
+            var encontrados = optometristas.Where(o => o.Nombre != null && o.Nombre.Contains(nombre, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (!encontrados.Any())
+            {
+                Console.WriteLine("\nOptometrista no encontrado. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\nResultados:");
+            foreach (var optometrista in encontrados)
+            {
+                Console.WriteLine($"ID: {optometrista.Id}");
+                Console.WriteLine($"Nombre: {optometrista.Nombre} {optometrista.Apellido}");
+                Console.WriteLine($"Cédula: {optometrista.CedulaProfesional}");
+                Console.WriteLine($"Especialidad: {optometrista.Especialidad}");
+                Console.WriteLine($"Correo: {optometrista.Correo}");
+                Console.WriteLine($"Celular: {optometrista.Celular}");
+                Console.WriteLine($"Emergencia: {optometrista.NumeroEmergencia}");
+                Console.WriteLine($"Teléfono: {optometrista.Telefono}");
+                Console.WriteLine($"Dirección: {optometrista.Direccion}");
+                Console.WriteLine("------------------------");
+            }
+
+            Console.WriteLine("\nPresione cualquier tecla para continuar...");
+            Console.ReadKey();
+        }
+
+        private async Task RegistrarOptometristaAsync()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Registrar Nuevo Optometrista ===\n");
+
+            Console.Write("Nombre: ");
+            var nombre = Console.ReadLine()?.Trim();
+            Console.Write("Apellido: ");
+            var apellido = Console.ReadLine()?.Trim();
+            Console.Write("Cédula profesional: ");
+            var cedula = Console.ReadLine()?.Trim();
+            Console.Write("Especialidad: ");
+            var especialidad = Console.ReadLine()?.Trim();
+            Console.Write("Correo: ");
+            var correo = Console.ReadLine()?.Trim();
+            Console.Write("Celular: ");
+            var celular = Console.ReadLine()?.Trim();
+            Console.Write("Número de emergencia: ");
+            var emergencia = Console.ReadLine()?.Trim();
+            Console.Write("Teléfono (opcional): ");
+            var telefono = Console.ReadLine()?.Trim();
+            Console.Write("Dirección (opcional): ");
+            var direccion = Console.ReadLine()?.Trim();
+
+            if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(apellido) || string.IsNullOrEmpty(cedula) ||
+                string.IsNullOrEmpty(especialidad) || string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(celular) ||
+                string.IsNullOrEmpty(emergencia))
+            {
+                Console.WriteLine("\nTodos los campos obligatorios deben ser llenados. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            var optometrista = new Optometrista
+            {
+                Id = Guid.NewGuid().ToString(),
+                Nombre = nombre,
+                Apellido = apellido,
+                CedulaProfesional = cedula,
+                Especialidad = especialidad,
+                Correo = correo,
+                Celular = celular,
+                NumeroEmergencia = emergencia,
+                Telefono = telefono,
+                Direccion = direccion,
+                FechaContratacion = DateTime.UtcNow,
+                Activo = true,
+                type = "Optometrista"
+            };
+
+            await _optometristaService.CreateAsync(optometrista);
+            Console.WriteLine("\nOptometrista registrado exitosamente. Presione cualquier tecla para continuar...");
+            Console.ReadKey();
+        }
+
+        private async Task ActualizarOptometristaAsync()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Actualizar Optometrista ===\n");
+
+            Console.Write("ID del optometrista: ");
+            var optometristaId = Console.ReadLine()?.Trim();
+
+            if (string.IsNullOrEmpty(optometristaId))
+            {
+                Console.WriteLine("\nID de optometrista inválido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            var optometrista = await _optometristaService.GetByIdAsync(optometristaId);
+            if (optometrista == null)
+            {
+                Console.WriteLine("\nOptometrista no encontrado. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\nIngrese los nuevos datos (deje en blanco para mantener el valor actual):");
+
+            Console.Write($"Nombre [{optometrista.Nombre}]: ");
+            var nombre = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(nombre))
+                optometrista.Nombre = nombre;
+
+            Console.Write($"Apellido [{optometrista.Apellido}]: ");
+            var apellido = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(apellido))
+                optometrista.Apellido = apellido;
+
+            Console.Write($"Cédula profesional [{optometrista.CedulaProfesional}]: ");
+            var cedula = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(cedula))
+                optometrista.CedulaProfesional = cedula;
+
+            Console.Write($"Especialidad [{optometrista.Especialidad}]: ");
+            var especialidad = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(especialidad))
+                optometrista.Especialidad = especialidad;
+
+            Console.Write($"Correo [{optometrista.Correo}]: ");
+            var correo = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(correo))
+                optometrista.Correo = correo;
+
+            Console.Write($"Celular [{optometrista.Celular}]: ");
+            var celular = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(celular))
+                optometrista.Celular = celular;
+
+            Console.Write($"Número de emergencia [{optometrista.NumeroEmergencia}]: ");
+            var emergencia = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(emergencia))
+                optometrista.NumeroEmergencia = emergencia;
+
+            Console.Write($"Teléfono [{optometrista.Telefono}]: ");
+            var telefono = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(telefono))
+                optometrista.Telefono = telefono;
+
+            Console.Write($"Dirección [{optometrista.Direccion}]: ");
+            var direccion = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(direccion))
+                optometrista.Direccion = direccion;
+
+            var (success, message) = await _optometristaService.UpdateAsync(optometristaId, optometrista);
+            Console.WriteLine("\nOptometrista actualizado exitosamente. Presione cualquier tecla para continuar...");
+            Console.ReadKey();
+        }
     }
-} 
+}

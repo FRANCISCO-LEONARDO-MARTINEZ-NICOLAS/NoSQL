@@ -1,15 +1,14 @@
 using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
-using NoSQL.Infrastructure.Repositories;
-using NoSQL.Application.Services.Interfaces;
+using NoSQL.Domain.Interfaces;
 
 namespace NoSQL.Application.Services
 {
     public class CitaService : ICitaService
     {
-        private readonly CitaRepository _repository;
+        private readonly ICitaRepository _repository;
 
-        public CitaService(CitaRepository repository)
+        public CitaService(ICitaRepository repository)
         {
             _repository = repository;
         }
@@ -19,27 +18,17 @@ namespace NoSQL.Application.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<Cita?> GetByIdAsync(Guid id)
+        public async Task<Cita?> GetByIdAsync(string id)
         {
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Cita>> GetByPacienteEmailAsync(string email)
-        {
-            return await _repository.GetByPacienteEmailAsync(email);
-        }
-
-        public async Task<IEnumerable<Cita>> GetByOptometristaEmailAsync(string email)
-        {
-            return await _repository.GetByOptometristaEmailAsync(email);
-        }
-
-        public async Task<IEnumerable<Cita>> GetByPacienteIdAsync(Guid pacienteId)
+        public async Task<IEnumerable<Cita>> GetByPacienteIdAsync(string pacienteId)
         {
             return await _repository.GetByPacienteIdAsync(pacienteId);
         }
 
-        public async Task<IEnumerable<Cita>> GetByOptometristaIdAsync(Guid optometristaId)
+        public async Task<IEnumerable<Cita>> GetByOptometristaIdAsync(string optometristaId)
         {
             return await _repository.GetByOptometristaIdAsync(optometristaId);
         }
@@ -48,7 +37,7 @@ namespace NoSQL.Application.Services
         {
             try
             {
-                cita.Id = Guid.NewGuid();
+                cita.Id = Guid.NewGuid().ToString();
                 await _repository.AddAsync(cita);
                 return (true, "Cita creada exitosamente");
             }
@@ -58,23 +47,37 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> UpdateAsync(Guid id, Cita cita)
+        public async Task<(bool Success, string Message)> UpdateAsync(string id, Cita cita)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null)
-                return (false, "Cita no encontrada");
-            cita.Id = id;
-            await _repository.UpdateAsync(id, cita);
-            return (true, "Cita actualizada exitosamente");
+            try
+            {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Cita no encontrada");
+                cita.Id = id;
+                await _repository.UpdateAsync(id, cita);
+                return (true, "Cita actualizada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al actualizar cita: {ex.Message}");
+            }
         }
 
-        public async Task<(bool Success, string Message)> DeleteAsync(Guid id)
+        public async Task<(bool Success, string Message)> DeleteAsync(string id)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null)
-                return (false, "Cita no encontrada");
-            await _repository.DeleteAsync(id);
-            return (true, "Cita eliminada exitosamente");
+            try
+            {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Cita no encontrada");
+                await _repository.DeleteAsync(id);
+                return (true, "Cita eliminada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al eliminar cita: {ex.Message}");
+            }
         }
     }
 }

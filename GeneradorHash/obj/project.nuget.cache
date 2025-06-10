@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "VmGl6J2V1/8=",
+  "success": true,
+  "projectFilePath": "D:\\6to Semestre\\NoSQL\\Proyecto 3Parcial\\Optica NoSQL\\NoSQL\\GeneradorHash\\GeneradorHash.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\leona\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

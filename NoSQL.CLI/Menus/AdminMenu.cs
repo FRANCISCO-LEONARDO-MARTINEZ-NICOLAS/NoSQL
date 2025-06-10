@@ -1,92 +1,299 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using NoSQL.Application.Interfaces;
+using NoSQL.Domain.Entities;
 
 namespace NoSQL.CLI.Menus
 {
     public class AdminMenu : BaseMenu
     {
-        public AdminMenu(IServiceProvider serviceProvider, string currentUserEmail, string currentUserRole)
-            : base(serviceProvider, currentUserEmail, currentUserRole)
+        private readonly IUsuarioService _usuarioService;
+
+        public AdminMenu(IUsuarioService usuarioService)
         {
+            _usuarioService = usuarioService;
         }
 
         public override async Task ShowAsync()
         {
             while (true)
             {
-                ClearScreen();
-                ShowHeader("Panel de Administración");
-                Console.WriteLine("1. Gestión de Optometristas");
-                Console.WriteLine("2. Configuración del Sistema");
-                Console.WriteLine("3. Monitoreo de Actividades");
-                Console.WriteLine("4. Generación de Reportes");
-                Console.WriteLine("5. Cerrar Sesión");
-                Console.Write("\nSeleccione una opción: ");
+                Console.Clear();
+                Console.WriteLine("=== Menú de Administración ===\n");
+                Console.WriteLine("1. Ver todos los usuarios");
+                Console.WriteLine("2. Buscar usuario por correo");
+                Console.WriteLine("3. Registrar nuevo usuario");
+                Console.WriteLine("4. Actualizar usuario");
+                Console.WriteLine("5. Cambiar contraseña de usuario");
+                Console.WriteLine("0. Cerrar sesión");
 
-                string option = Console.ReadLine();
+                var opcion = Console.ReadLine()?.Trim();
 
-                switch (option)
+                switch (opcion)
                 {
                     case "1":
-                        await ShowOptometristaManagementMenu();
+                        await MostrarTodosLosUsuariosAsync();
                         break;
                     case "2":
-                        await ShowSystemConfigMenu();
+                        await BuscarUsuarioPorCorreoAsync();
                         break;
                     case "3":
-                        await ShowMonitoringMenu();
+                        await RegistrarUsuarioAsync();
                         break;
                     case "4":
-                        await ShowReportsMenu();
+                        await ActualizarUsuarioAsync();
                         break;
                     case "5":
-                        _currentUserEmail = null;
-                        _currentUserRole = null;
+                        await CambiarContrasenaUsuarioAsync();
+                        break;
+                    case "0":
                         return;
+                    default:
+                        Console.WriteLine("\nOpción no válida. Presione cualquier tecla para continuar...");
+                        Console.ReadKey();
+                        break;
                 }
             }
         }
 
-        private async Task ShowOptometristaManagementMenu()
+        private async Task MostrarTodosLosUsuariosAsync()
         {
-            ClearScreen();
-            ShowHeader("Gestión de Optometristas");
-            Console.WriteLine("1. Agregar Optometrista");
-            Console.WriteLine("2. Eliminar Optometrista");
-            Console.WriteLine("3. Modificar Optometrista");
-            Console.WriteLine("4. Consultar Optometristas");
-            Console.WriteLine("5. Volver al menú principal");
-            Console.Write("\nSeleccione una opción: ");
+            Console.Clear();
+            Console.WriteLine("=== Todos los Usuarios ===\n");
 
-            string option = Console.ReadLine();
+            var usuarios = await _usuarioService.GetAllAsync();
+            if (usuarios == null || !usuarios.Any())
+            {
+                Console.WriteLine("No hay usuarios registrados.");
+            }
+            else
+            {
+                foreach (var usuario in usuarios)
+                {
+                    Console.WriteLine($"ID: {usuario.Id}");
+                    Console.WriteLine($"Nombre: {usuario.Nombre}");
+                    Console.WriteLine($"Correo: {usuario.Correo}");
+                    Console.WriteLine($"Rol: {usuario.Rol}");
+                    Console.WriteLine($"Estado: {(usuario.Activo ? "Activo" : "Inactivo")}");
+                    Console.WriteLine($"Fecha de creación: {usuario.FechaCreacion:dd/MM/yyyy HH:mm}");
+                    Console.WriteLine($"Último acceso: {usuario.UltimoAcceso:dd/MM/yyyy HH:mm}");
+                    Console.WriteLine("------------------------");
+                }
+            }
 
-            var optometristaMenu = new OptometristaManagementMenu(_serviceProvider, _currentUserEmail, _currentUserRole);
-            await optometristaMenu.HandleOptionAsync(option);
+            Console.WriteLine("\nPresione cualquier tecla para continuar...");
+            Console.ReadKey();
         }
 
-        private async Task ShowSystemConfigMenu()
+        private async Task BuscarUsuarioPorCorreoAsync()
         {
-            ClearScreen();
-            ShowHeader("Configuración del Sistema");
-            // Implementar menú de configuración
-            ShowFooter();
+            Console.Clear();
+            Console.WriteLine("=== Buscar Usuario por Correo ===\n");
+
+            Console.Write("Correo del usuario: ");
+            var correo = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(correo))
+            {
+                Console.WriteLine("\nCorreo requerido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            var usuario = await _usuarioService.GetByEmailAsync(correo);
+            if (usuario == null)
+            {
+                Console.WriteLine("\nUsuario no encontrado. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\nDatos del usuario:");
+            Console.WriteLine($"ID: {usuario.Id}");
+            Console.WriteLine($"Nombre: {usuario.Nombre}");
+            Console.WriteLine($"Correo: {usuario.Correo}");
+            Console.WriteLine($"Rol: {usuario.Rol}");
+            Console.WriteLine($"Estado: {(usuario.Activo ? "Activo" : "Inactivo")}");
+            Console.WriteLine($"Fecha de creación: {usuario.FechaCreacion:dd/MM/yyyy HH:mm}");
+            Console.WriteLine($"Último acceso: {usuario.UltimoAcceso:dd/MM/yyyy HH:mm}");
+
+            Console.WriteLine("\nPresione cualquier tecla para continuar...");
+            Console.ReadKey();
         }
 
-        private async Task ShowMonitoringMenu()
+        private async Task RegistrarUsuarioAsync()
         {
-            ClearScreen();
-            ShowHeader("Monitoreo de Actividades");
-            // Implementar menú de monitoreo
-            ShowFooter();
+            Console.Clear();
+            Console.WriteLine("=== Registrar Nuevo Usuario ===\n");
+
+            Console.Write("Nombre: ");
+            var nombre = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(nombre))
+            {
+                Console.WriteLine("\nNombre requerido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("Correo: ");
+            var correo = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(correo))
+            {
+                Console.WriteLine("\nCorreo requerido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("Contraseña (se guardará como hash): ");
+            var password = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("\nContraseña requerida. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\nRol:");
+            Console.WriteLine("1. Administrador");
+            Console.WriteLine("2. Optometrista");
+            Console.WriteLine("3. Recepcionista");
+            var rol = Console.ReadLine()?.Trim() switch
+            {
+                "1" => "Administrador",
+                "2" => "Optometrista",
+                "3" => "Recepcionista",
+                _ => null
+            };
+
+            if (rol == null)
+            {
+                Console.WriteLine("\nRol inválido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            var usuario = new Usuario
+            {
+                Id = Guid.NewGuid().ToString(),
+                Nombre = nombre,
+                Correo = correo,
+                Rol = rol,
+                Activo = true,
+                FechaCreacion = DateTime.UtcNow,
+                UltimoAcceso = DateTime.UtcNow,
+                type = "Usuario",
+                PasswordHash = password
+            };
+
+            await _usuarioService.CreateAsync(usuario);
+            // Si tienes notificación, descomenta la siguiente línea:
+            // await _notificacionService.EnviarCorreoBienvenidaAsync(usuario.Correo, usuario.Nombre);
+            Console.WriteLine("\nUsuario registrado exitosamente. Presione cualquier tecla para continuar...");
+            Console.ReadKey();
         }
 
-        private async Task ShowReportsMenu()
+        private async Task ActualizarUsuarioAsync()
         {
-            ClearScreen();
-            ShowHeader("Generación de Reportes");
-            // Implementar menú de reportes
-            ShowFooter();
+            Console.Clear();
+            Console.WriteLine("=== Actualizar Usuario ===\n");
+
+            Console.Write("ID del usuario: ");
+            var usuarioId = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(usuarioId))
+            {
+                Console.WriteLine("\nID de usuario inválido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            var usuario = await _usuarioService.GetByIdAsync(usuarioId);
+            if (usuario == null)
+            {
+                Console.WriteLine("\nUsuario no encontrado. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\nIngrese los nuevos datos (deje en blanco para mantener el valor actual):");
+
+            Console.Write($"Nombre [{usuario.Nombre}]: ");
+            var nombre = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(nombre))
+                usuario.Nombre = nombre;
+
+            Console.Write($"Correo [{usuario.Correo}]: ");
+            var correo = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(correo))
+                usuario.Correo = correo;
+
+            Console.WriteLine($"\nRol actual: {usuario.Rol}");
+            Console.WriteLine("Nuevo rol:");
+            Console.WriteLine("1. Administrador");
+            Console.WriteLine("2. Optometrista");
+            Console.WriteLine("3. Recepcionista");
+            var rol = Console.ReadLine()?.Trim() switch
+            {
+                "1" => "Administrador",
+                "2" => "Optometrista",
+                "3" => "Recepcionista",
+                _ => null
+            };
+            if (rol != null)
+                usuario.Rol = rol;
+
+            Console.WriteLine($"\nEstado actual: {(usuario.Activo ? "Activo" : "Inactivo")}");
+            Console.WriteLine("Nuevo estado:");
+            Console.WriteLine("1. Activo");
+            Console.WriteLine("2. Inactivo");
+            var estado = Console.ReadLine()?.Trim() switch
+            {
+                "1" => true,
+                "2" => false,
+                _ => usuario.Activo
+            };
+            usuario.Activo = estado;
+
+            var (success, message) = await _usuarioService.UpdateAsync(usuarioId, usuario);
+            Console.WriteLine(message);
+            Console.WriteLine("\nUsuario actualizado exitosamente. Presione cualquier tecla para continuar...");
+            Console.ReadKey();
+        }
+
+        private async Task CambiarContrasenaUsuarioAsync()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Cambiar Contraseña de Usuario ===\n");
+
+            Console.Write("ID del usuario: ");
+            var usuarioId = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(usuarioId))
+            {
+                Console.WriteLine("\nID de usuario inválido. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            var usuario = await _usuarioService.GetByIdAsync(usuarioId);
+            if (usuario == null)
+            {
+                Console.WriteLine("\nUsuario no encontrado. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("Nueva contraseña (se guardará como hash): ");
+            var nuevaPassword = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(nuevaPassword))
+            {
+                Console.WriteLine("\nContraseña requerida. Presione cualquier tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            usuario.PasswordHash = nuevaPassword;
+            var (success, message) = await _usuarioService.UpdateAsync(usuarioId, usuario);
+            Console.WriteLine(message);
+            Console.WriteLine("\nContraseña actualizada exitosamente. Presione cualquier tecla para continuar...");
+            Console.ReadKey();
         }
     }
-} 
+}

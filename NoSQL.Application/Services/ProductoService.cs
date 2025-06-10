@@ -1,15 +1,14 @@
 using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
-using NoSQL.Infrastructure.Repositories;
-using NoSQL.Application.Services.Interfaces;
+using NoSQL.Domain.Interfaces;
 
 namespace NoSQL.Application.Services
 {
     public class ProductoService : IProductoService
     {
-        private readonly ProductoRepository _repository;
+        private readonly IProductoRepository _repository;
 
-        public ProductoService(ProductoRepository repository)
+        public ProductoService(IProductoRepository repository)
         {
             _repository = repository;
         }
@@ -19,7 +18,7 @@ namespace NoSQL.Application.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<Producto?> GetByIdAsync(Guid id)
+        public async Task<Producto?> GetByIdAsync(string id)
         {
             return await _repository.GetByIdAsync(id);
         }
@@ -38,7 +37,7 @@ namespace NoSQL.Application.Services
         {
             try
             {
-                producto.Id = Guid.NewGuid();
+                producto.Id = Guid.NewGuid().ToString();
                 producto.FechaVenta = DateTime.UtcNow;
                 await _repository.AddAsync(producto);
                 return (true, "Producto creado exitosamente");
@@ -49,48 +48,54 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> UpdateStatusAsync(string id, string newStatus)
+        public async Task<(bool Success, string Message)> UpdateAsync(string id, Producto producto)
         {
             try
             {
-                if (!Guid.TryParse(id, out Guid guidId))
-                {
-                    return (false, "ID de producto inválido");
-                }
-
-                var producto = await _repository.GetByIdAsync(guidId);
-                if (producto == null)
-                {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
                     return (false, "Producto no encontrado");
-                }
-
-                producto.Estado = newStatus;
-                await _repository.UpdateAsync(guidId, producto);
-                return (true, "Estado del producto actualizado exitosamente");
+                producto.Id = id;
+                await _repository.UpdateAsync(id, producto);
+                return (true, "Producto actualizado exitosamente");
             }
             catch (Exception ex)
             {
-                return (false, $"Error al actualizar estado del producto: {ex.Message}");
+                return (false, $"Error al actualizar producto: {ex.Message}");
             }
         }
 
-        public async Task<(bool Success, string Message)> UpdateAsync(Guid id, Producto producto)
+        public async Task<(bool Success, string Message)> DeleteAsync(string id)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null)
-                return (false, "Producto no encontrado");
-            producto.Id = id;
-            await _repository.UpdateAsync(id, producto);
-            return (true, "Producto actualizado exitosamente");
+            try
+            {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Producto no encontrado");
+                await _repository.DeleteAsync(id);
+                return (true, "Producto eliminado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al eliminar producto: {ex.Message}");
+            }
         }
 
-        public async Task<(bool Success, string Message)> DeleteAsync(Guid id)
+        public async Task<(bool Success, string Message)> UpdateStockAsync(string id, int cantidad)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null)
-                return (false, "Producto no encontrado");
-            await _repository.DeleteAsync(id);
-            return (true, "Producto eliminado exitosamente");
+            try
+            {
+                var producto = await _repository.GetByIdAsync(id);
+                if (producto == null)
+                    return (false, "Producto no encontrado");
+                producto.Stock += cantidad;
+                await _repository.UpdateAsync(id, producto);
+                return (true, "Stock actualizado exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al actualizar stock: {ex.Message}");
+            }
         }
     }
 }

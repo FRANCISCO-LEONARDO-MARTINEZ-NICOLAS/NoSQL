@@ -1,15 +1,14 @@
 using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
-using NoSQL.Infrastructure.Repositories;
-using NoSQL.Application.Services.Interfaces;
+using NoSQL.Domain.Interfaces;
 
 namespace NoSQL.Application.Services
 {
     public class ConsultaService : IConsultaService
     {
-        private readonly ConsultaRepository _repository;
+        private readonly IConsultaRepository _repository;
 
-        public ConsultaService(ConsultaRepository repository)
+        public ConsultaService(IConsultaRepository repository)
         {
             _repository = repository;
         }
@@ -19,7 +18,7 @@ namespace NoSQL.Application.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<Consulta?> GetByIdAsync(Guid id)
+        public async Task<Consulta?> GetByIdAsync(string id)
         {
             return await _repository.GetByIdAsync(id);
         }
@@ -34,21 +33,33 @@ namespace NoSQL.Application.Services
             return await _repository.GetByOptometristaEmailAsync(email);
         }
 
-        public async Task<IEnumerable<Consulta>> GetByPacienteIdAsync(Guid id)
+        public async Task<IEnumerable<Consulta>> GetByPacienteIdAsync(string id)
         {
             return await _repository.GetByPacienteIdAsync(id);
         }
 
-        public async Task<IEnumerable<Consulta>> GetByOptometristaIdAsync(Guid id)
+        public async Task<IEnumerable<Consulta>> GetByOptometristaIdAsync(string id)
         {
             return await _repository.GetByOptometristaIdAsync(id);
+        }
+
+        public async Task<IEnumerable<Consulta>> GetByFechaAsync(DateTime fecha)
+        {
+            var consultas = await GetAllAsync();
+            return consultas.Where(c => c.Fecha.Date == fecha.Date);
+        }
+
+        public async Task<IEnumerable<Consulta>> GetByFechaAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var consultas = await GetAllAsync();
+            return consultas.Where(c => c.Fecha >= fechaInicio && c.Fecha <= fechaFin);
         }
 
         public async Task<(bool Success, string Message)> CreateAsync(Consulta consulta)
         {
             try
             {
-                consulta.Id = Guid.NewGuid();
+                consulta.Id = Guid.NewGuid().ToString();
                 consulta.Fecha = DateTime.UtcNow;
                 await _repository.AddAsync(consulta);
                 return (true, "Consulta creada exitosamente");
@@ -59,23 +70,39 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> UpdateAsync(Guid id, Consulta consulta)
+        public async Task<(bool Success, string Message)> UpdateAsync(string id, Consulta consulta)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null)
-                return (false, "Consulta no encontrada");
-            consulta.Id = id;
-            await _repository.UpdateAsync(id, consulta);
-            return (true, "Consulta actualizada exitosamente");
+            try
+            {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Consulta no encontrada");
+
+                consulta.Id = id;
+                await _repository.UpdateAsync(id, consulta);
+                return (true, "Consulta actualizada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al actualizar consulta: {ex.Message}");
+            }
         }
 
-        public async Task<(bool Success, string Message)> DeleteAsync(Guid id)
+        public async Task<(bool Success, string Message)> DeleteAsync(string id)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null)
-                return (false, "Consulta no encontrada");
-            await _repository.DeleteAsync(id);
-            return (true, "Consulta eliminada exitosamente");
+            try
+            {
+                var existing = await _repository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Consulta no encontrada");
+
+                await _repository.DeleteAsync(id);
+                return (true, "Consulta eliminada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al eliminar consulta: {ex.Message}");
+            }
         }
     }
 }

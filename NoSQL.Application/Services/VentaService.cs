@@ -20,74 +20,98 @@ namespace NoSQL.Application.Services
             return await _ventaRepository.GetAllAsync();
         }
 
-        public async Task<Venta?> GetByIdAsync(Guid id)
+        public async Task<Venta?> GetByIdAsync(string id)
         {
             return await _ventaRepository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Venta>> GetByPacienteIdAsync(Guid pacienteId)
+        public async Task<IEnumerable<Venta>> GetByPacienteIdAsync(string pacienteId)
         {
             return await _ventaRepository.GetByPacienteIdAsync(pacienteId);
         }
 
-        public async Task<IEnumerable<Venta>> GetByOptometristaIdAsync(Guid optometristaId)
+        public async Task<IEnumerable<Venta>> GetByOptometristaIdAsync(string optometristaId)
         {
             return await _ventaRepository.GetByOptometristaIdAsync(optometristaId);
         }
 
-        public async Task<Venta> CreateAsync(Venta venta)
+        public async Task<(bool Success, string Message)> CreateAsync(Venta venta)
         {
-            venta.Id = Guid.NewGuid();
-            venta.Fecha = DateTime.UtcNow;
-            venta.CalcularMontoTotal();
-            
-            await _ventaRepository.CreateAsync(venta);
-            return venta;
+            try
+            {
+                venta.Id = Guid.NewGuid().ToString();
+                venta.Fecha = DateTime.UtcNow;
+                venta.CalcularMontoTotal();
+                await _ventaRepository.CreateAsync(venta);
+                return (true, "Venta creada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al crear venta: {ex.Message}");
+            }
         }
 
-        public async Task UpdateAsync(Venta venta)
+        public async Task<(bool Success, string Message)> UpdateAsync(string id, Venta venta)
         {
-            venta.CalcularMontoTotal();
-            await _ventaRepository.UpdateAsync(venta);
+            try
+            {
+                var existing = await _ventaRepository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Venta no encontrada");
+                venta.Id = id;
+                venta.CalcularMontoTotal();
+                await _ventaRepository.UpdateAsync(venta);
+                return (true, "Venta actualizada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al actualizar venta: {ex.Message}");
+            }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<(bool Success, string Message)> DeleteAsync(string id)
         {
-            await _ventaRepository.DeleteAsync(id);
+            try
+            {
+                var existing = await _ventaRepository.GetByIdAsync(id);
+                if (existing == null)
+                    return (false, "Venta no encontrada");
+                await _ventaRepository.DeleteAsync(id);
+                return (true, "Venta eliminada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al eliminar venta: {ex.Message}");
+            }
         }
 
-        public async Task<decimal> CalcularTotalVentaAsync(Guid ventaId)
+        public async Task<(bool Success, string Message, decimal Total)> CalcularTotalVentaAsync(string ventaId)
         {
             var venta = await GetByIdAsync(ventaId);
             if (venta == null)
-                throw new KeyNotFoundException($"Venta con ID {ventaId} no encontrada");
-
+                return (false, $"Venta con ID {ventaId} no encontrada", 0);
             venta.CalcularMontoTotal();
-            return venta.MontoTotal;
+            return (true, "Total calculado exitosamente", venta.MontoTotal);
         }
 
-        public async Task<bool> AgregarProductoAsync(Guid ventaId, ProductoVenta producto)
+        public async Task<(bool Success, string Message)> AgregarProductoAsync(string ventaId, ProductoVenta producto)
         {
             var venta = await GetByIdAsync(ventaId);
             if (venta == null)
-                return false;
-
+                return (false, "Venta no encontrada");
             venta.Productos.Add(producto);
             venta.CalcularMontoTotal();
-            await UpdateAsync(venta);
-            return true;
+            await _ventaRepository.UpdateAsync(venta);
+            return (true, "Producto agregado exitosamente");
         }
 
-        public async Task<bool> ActualizarEstadoAsync(Guid ventaId, string nuevoEstado)
+        public async Task<(bool Success, string Message)> ActualizarEstadoAsync(string ventaId, string nuevoEstado)
         {
             var venta = await GetByIdAsync(ventaId);
             if (venta == null)
-                return false;
-
+                return (false, "Venta no encontrada");
             venta.Estado = nuevoEstado;
-            await UpdateAsync(venta);
-
-            // Si el estado es "Listo", enviar notificación al paciente
+            await _ventaRepository.UpdateAsync(venta);
             if (nuevoEstado.Equals("Listo", StringComparison.OrdinalIgnoreCase))
             {
                 foreach (var producto in venta.Productos)
@@ -95,8 +119,7 @@ namespace NoSQL.Application.Services
                     await _notificacionService.CrearNotificacionProductoListoAsync(venta.PacienteId, producto.Nombre);
                 }
             }
-
-            return true;
+            return (true, "Estado actualizado exitosamente");
         }
     }
 } 

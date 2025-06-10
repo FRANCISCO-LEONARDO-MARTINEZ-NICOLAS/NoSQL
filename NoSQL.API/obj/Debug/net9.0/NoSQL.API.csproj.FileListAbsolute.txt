@@ -62,3 +62,4 @@ D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.API\obj\Debug\n
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.API\obj\Debug\net9.0\NoSQL.API.pdb
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.API\obj\Debug\net9.0\NoSQL.API.genruntimeconfig.cache
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.API\obj\Debug\net9.0\ref\NoSQL.API.dll
+D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.API\bin\Debug\net9.0\BCrypt.Net-Next.dll

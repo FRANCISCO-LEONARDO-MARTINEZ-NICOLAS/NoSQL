@@ -11,3 +11,6 @@ D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Infrastructure\
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Infrastructure\obj\Debug\net8.0\refint\NoSQL.Infrastructure.dll
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Infrastructure\obj\Debug\net8.0\NoSQL.Infrastructure.pdb
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Infrastructure\obj\Debug\net8.0\ref\NoSQL.Infrastructure.dll
+D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Infrastructure\bin\Debug\net8.0\NoSQL.Domain.dll
+D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Infrastructure\bin\Debug\net8.0\NoSQL.Domain.pdb
+D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.Infrastructure\obj\Debug\net8.0\NoSQL.In.E32750F3.Up2Date

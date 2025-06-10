@@ -8,15 +8,15 @@
     ".NETCoreApp,Version=v9.0": {
       "NoSQL.Infrastructure/1.0.0": {
         "dependencies": {
-          "CouchbaseNetClient": "3.7.0",
-          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "CouchbaseNetClient": "3.7.1",
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0-preview.2.24128.5",
           "NoSQL.Domain": "1.0.0"
         },
         "runtime": {
           "NoSQL.Infrastructure.dll": {}
         }
       },
-      "CouchbaseNetClient/3.7.0": {
+      "CouchbaseNetClient/3.7.1": {
         "dependencies": {
           "DnsClient": "1.8.0",
           "Google.Api.CommonProtos": "2.13.0",
@@ -34,8 +34,8 @@
         },
         "runtime": {
           "lib/net8.0/Couchbase.NetClient.dll": {
-            "assemblyVersion": "3.7.0.0",
-            "fileVersion": "3.7.0.0"
+            "assemblyVersion": "3.7.1.0",
+            "fileVersion": "3.7.1.0"
           }
         }
       },
@@ -122,7 +122,7 @@
       },
       "Microsoft.Extensions.Configuration/3.0.3": {
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0"
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0-preview.2.24128.5"
         },
         "runtime": {
           "lib/netcoreapp3.0/Microsoft.Extensions.Configuration.dll": {
@@ -131,14 +131,14 @@
           }
         }
       },
-      "Microsoft.Extensions.Configuration.Abstractions/8.0.0": {
+      "Microsoft.Extensions.Configuration.Abstractions/9.0.0-preview.2.24128.5": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "8.0.0"
+          "Microsoft.Extensions.Primitives": "9.0.0-preview.2.24128.5"
         },
         "runtime": {
-          "lib/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.23.53103"
+          "lib/net9.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.12805"
           }
         }
       },
@@ -218,7 +218,7 @@
       "Microsoft.Extensions.Options/3.0.3": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.0.3",
-          "Microsoft.Extensions.Primitives": "8.0.0"
+          "Microsoft.Extensions.Primitives": "9.0.0-preview.2.24128.5"
         },
         "runtime": {
           "lib/netcoreapp3.0/Microsoft.Extensions.Options.dll": {
@@ -227,11 +227,11 @@
           }
         }
       },
-      "Microsoft.Extensions.Primitives/8.0.0": {
+      "Microsoft.Extensions.Primitives/9.0.0-preview.2.24128.5": {
         "runtime": {
-          "lib/net8.0/Microsoft.Extensions.Primitives.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.23.53103"
+          "lib/net9.0/Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.12805"
           }
         }
       },
@@ -289,12 +289,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "CouchbaseNetClient/3.7.0": {
+    "CouchbaseNetClient/3.7.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-S6uRBeniDj+I5C1usssU+/KrVU8DVw9lHZGW8wh0zS2qAS7dOpMolVAq1PSr/bb6OPOT3FjZsd8Dz5UZ7h2d1A==",
-      "path": "couchbasenetclient/3.7.0",
-      "hashPath": "couchbasenetclient.3.7.0.nupkg.sha512"
+      "sha512": "sha512-rUM4HmAAvIlfPOppdxWw3q4vEkcGpZuiFYWUA7NQH2xJoDVevxChdkyWLC4BUiXhMJtxocMaCuxgDipPt2BEbA==",
+      "path": "couchbasenetclient/3.7.1",
+      "hashPath": "couchbasenetclient.3.7.1.nupkg.sha512"
     },
     "DnsClient/1.8.0": {
       "type": "package",
@@ -359,12 +359,12 @@
       "path": "microsoft.extensions.configuration/3.0.3",
       "hashPath": "microsoft.extensions.configuration.3.0.3.nupkg.sha512"
     },
-    "Microsoft.Extensions.Configuration.Abstractions/8.0.0": {
+    "Microsoft.Extensions.Configuration.Abstractions/9.0.0-preview.2.24128.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-3lE/iLSutpgX1CC0NOW70FJoGARRHbyKmG7dc0klnUZ9Dd9hS6N/POPWhKhMLCEuNN5nXEY5agmlFtH562vqhQ==",
-      "path": "microsoft.extensions.configuration.abstractions/8.0.0",
-      "hashPath": "microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512"
+      "sha512": "sha512-LiasOr8XbC0YAV+saqBUi90Wc4rc1gpkq7MzMNBAvE7KnuxQdlxgd7sN4dgr9uWfs76ivfHQOJefI4LPuwViOg==",
+      "path": "microsoft.extensions.configuration.abstractions/9.0.0-preview.2.24128.5",
+      "hashPath": "microsoft.extensions.configuration.abstractions.9.0.0-preview.2.24128.5.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration.Binder/3.0.3": {
       "type": "package",
@@ -422,12 +422,12 @@
       "path": "microsoft.extensions.options/3.0.3",
       "hashPath": "microsoft.extensions.options.3.0.3.nupkg.sha512"
     },
-    "Microsoft.Extensions.Primitives/8.0.0": {
+    "Microsoft.Extensions.Primitives/9.0.0-preview.2.24128.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-bXJEZrW9ny8vjMF1JV253WeLhpEVzFo1lyaZu1vQ4ZxWUlVvknZ/+ftFgVheLubb4eZPSwwxBeqS1JkCOjxd8g==",
-      "path": "microsoft.extensions.primitives/8.0.0",
-      "hashPath": "microsoft.extensions.primitives.8.0.0.nupkg.sha512"
+      "sha512": "sha512-9MTM5p0U66zXk205iDOY9qFuGR8NRXjbcQbpfTyhwaecnysToHxD7vKJ2LfdnzH4Msj1vSQ+M1bqdE82W4Y6JA==",
+      "path": "microsoft.extensions.primitives/9.0.0-preview.2.24128.5",
+      "hashPath": "microsoft.extensions.primitives.9.0.0-preview.2.24128.5.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.3": {
       "type": "package",

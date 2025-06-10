@@ -2,7 +2,7 @@ namespace NoSQL.Domain.Entities
 {
     public class Paciente
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public required string Nombre { get; set; }
         public required string Apellido { get; set; }
         public required DateTime FechaNacimiento { get; set; }
@@ -14,5 +14,8 @@ namespace NoSQL.Domain.Entities
         public string? Ocupacion { get; set; }
         public string? SeguroMedico { get; set; }
         public List<HistorialClinico> HistorialClinico { get; set; } = new();
+
+        // Agrega esta propiedad:
+        public string type { get; set; } = "paciente";
     }
 }

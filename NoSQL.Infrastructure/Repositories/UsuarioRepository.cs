@@ -1,5 +1,6 @@
 using Couchbase;
-using Couchbase.KeyValue;
+using Couchbase.Core.Exceptions.KeyValue;
+using Couchbase.Query;
 using Microsoft.Extensions.Configuration;
 using NoSQL.Domain.Entities;
 using NoSQL.Domain.Interfaces;
@@ -17,34 +18,41 @@ namespace NoSQL.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Usuario?> GetByIdAsync(Guid id)
-        {
-            var collection = _context.GetCollection(CollectionName);
-            var result = await collection.GetAsync(id.ToString());
-            return result.ContentAs<Usuario>();
-        }
-
-        public async Task<Usuario?> GetByEmailAsync(string email)
-        {
-            var query = $"SELECT u.* FROM `{_context.BucketName}` u WHERE u.email = $email";
-            var result = await _context.Cluster.QueryAsync<Usuario>(query, options => 
-                options.Parameter("email", email));
-            return await result.Rows.FirstOrDefaultAsync();
-        }
-
         public async Task<IEnumerable<Usuario>> GetAllAsync()
         {
             var query = $"SELECT u.* FROM `{_context.BucketName}` u WHERE u.type = 'usuario'";
-            var result = await _context.Cluster.QueryAsync<Usuario>(query);
-            return await result.Rows.ToListAsync();
+            var result = await _context.Bucket.Cluster.QueryAsync<Usuario>(query);
+            return await result.ToListAsync();
+        }
+
+        public async Task<Usuario?> GetByIdAsync(string id)
+        {
+            try
+            {
+                var result = await _context.Bucket.DefaultCollection()
+                    .GetAsync(id);
+                return result.ContentAs<Usuario>();
+            }
+            catch (DocumentNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Usuario?> GetByEmailAsync(string correo)
+        {
+            var query = $"SELECT u.* FROM `{_context.BucketName}` u WHERE u.type = 'usuario' AND u.correo = $correo LIMIT 1";
+            var options = QueryOptions.Create().Parameter("correo", correo);
+            var result = await _context.Bucket.Cluster.QueryAsync<Usuario>(query, options);
+            return (await result.ToListAsync()).FirstOrDefault();
         }
 
         public async Task<Usuario> CreateAsync(Usuario usuario)
         {
             var collection = _context.GetCollection(CollectionName);
-            usuario.Id = Guid.NewGuid();
+            usuario.Id = Guid.NewGuid().ToString();
             usuario.type = "usuario";
-            await collection.InsertAsync(usuario.Id.ToString(), usuario);
+            await collection.InsertAsync(usuario.Id, usuario);
             return usuario;
         }
 
@@ -52,19 +60,31 @@ namespace NoSQL.Infrastructure.Repositories
         {
             var collection = _context.GetCollection(CollectionName);
             usuario.type = "usuario";
-            await collection.UpsertAsync(usuario.Id.ToString(), usuario);
+            await collection.UpsertAsync(usuario.Id, usuario);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(string id)
         {
-            var collection = _context.GetCollection(CollectionName);
-            await collection.RemoveAsync(id.ToString());
+            await _context.Bucket.DefaultCollection()
+                .RemoveAsync(id);
         }
 
-        public async Task<bool> ExistsByEmailAsync(string email)
+        public async Task<bool> ExistsByEmailAsync(string correo)
         {
-            var usuario = await GetByEmailAsync(email);
+            var usuario = await GetByEmailAsync(correo);
             return usuario != null;
         }
+
+        public async Task AddAsync(Usuario usuario)
+        {
+            await _context.Bucket.DefaultCollection()
+                .InsertAsync(usuario.Id, usuario);
+        }
+
+        public async Task UpdateAsync(string id, Usuario usuario)
+        {
+            await _context.Bucket.DefaultCollection()
+                .ReplaceAsync(id, usuario);
+        }
     }
-} 
+}

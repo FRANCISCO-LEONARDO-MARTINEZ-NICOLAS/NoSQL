@@ -2,15 +2,15 @@ namespace NoSQL.API.DTOs
 {
     public class CrearNotificacionDto
     {
-        public required Guid PacienteId { get; set; }
+        public required string PacienteId { get; set; }
         public required string Correo { get; set; }
         public required string Mensaje { get; set; }
     }
 
     public class NotificacionResponseDto
     {
-        public Guid Id { get; set; }
-        public Guid PacienteId { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string PacienteId { get; set; } = string.Empty;
         public string Correo { get; set; } = string.Empty;
         public string Mensaje { get; set; } = string.Empty;
         public DateTime FechaEnvio { get; set; }

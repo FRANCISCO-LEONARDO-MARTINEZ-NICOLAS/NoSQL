@@ -19,11 +19,14 @@ namespace NoSQL.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var (success, token, message) = await _authService.LoginAsync(request.Email, request.Password);
+            if (string.IsNullOrEmpty(request.Rol))
+                return BadRequest(new { message = "El rol es requerido (Admin u Optometrista)" });
+
+            var (success, message, user, token) = await _authService.LoginAsync(request.Email, request.Password, request.Rol);
             if (!success)
                 return BadRequest(new { message });
 
-            return Ok(new { token, message });
+            return Ok(new { token, message, user });
         }
 
         [HttpPost("register")]
@@ -34,7 +37,8 @@ namespace NoSQL.API.Controllers
             {
                 Nombre = request.Nombre,
                 Email = request.Email,
-                Rol = request.Rol
+                Rol = request.Rol,
+                PasswordHash = "temp",
             };
 
             var (success, message) = await _authService.RegisterAsync(usuario, request.Password);
@@ -48,13 +52,15 @@ namespace NoSQL.API.Controllers
         [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
-            var success = await _authService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
-            
-            if (!success)
-                return BadRequest(new { message = "No se pudo cambiar la contraseña" });
+            var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email))
+                return BadRequest(new { message = "No se pudo obtener el email del usuario autenticado." });
 
-            return Ok(new { message = "Contraseña cambiada exitosamente" });
+            var (success, message) = await _authService.ChangePasswordAsync(email, request.CurrentPassword, request.NewPassword);
+            if (!success)
+                return BadRequest(new { message });
+
+            return Ok(new { message });
         }
     }
 
@@ -62,6 +68,7 @@ namespace NoSQL.API.Controllers
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string Rol { get; set; } = string.Empty;
     }
 
     public class RegisterRequest

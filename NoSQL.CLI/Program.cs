@@ -2,87 +2,119 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.IO;
 using NoSQL.CLI.Menus;
+using NoSQL.CLI.Services;
+using NoSQL.CLI.Services.Adapters;
 using NoSQL.Application.Services;
-using NoSQL.Application.Services.Interfaces;
 using NoSQL.Infrastructure;
 using NoSQL.Infrastructure.Repositories;
 using NoSQL.Domain.Interfaces;
+using NoSQL.Application.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace NoSQL.CLI
 {
     class Program
     {
-        private static IServiceProvider _serviceProvider;
-        private static IConfiguration _configuration;
-        private static string _currentUserEmail;
-        private static string _currentUserRole;
-
         static async Task Main(string[] args)
         {
-            Console.WriteLine("=== Sistema de Gestión de Clínica Optométrica ===");
-            
-            ConfigureServices();
+            var services = ConfigureServices();
+            var serviceProvider = services.BuildServiceProvider();
 
             while (true)
             {
-                if (string.IsNullOrEmpty(_currentUserEmail))
+                var loginMenu = serviceProvider.GetRequiredService<LoginMenu>();
+                var (success, user, token) = await loginMenu.ShowAsync();
+
+                if (!success || user == null)
                 {
-                    var loginMenu = new LoginMenu(_serviceProvider);
-                    await loginMenu.ShowAsync();
-                    var (email, role) = loginMenu.GetCurrentUser();
-                    _currentUserEmail = email;
-                    _currentUserRole = role;
+                    Console.WriteLine("\nPresione cualquier tecla para intentar nuevamente...");
+                    Console.ReadKey();
+                    continue;
                 }
-                else
+
+                switch (user.Rol.ToLower())
                 {
-                    if (_currentUserRole == "Admin")
-                    {
-                        var adminMenu = new AdminMenu(_serviceProvider, _currentUserEmail, _currentUserRole);
+                    case "admin":
+                        var adminMenu = serviceProvider.GetRequiredService<AdminMenu>();
                         await adminMenu.ShowAsync();
-                    }
-                    else
-                    {
-                        var optometristaMenu = new OptometristaMenu(_serviceProvider, _currentUserEmail, _currentUserRole);
+                        break;
+                    case "optometrista":
+                        var optometristaMenu = serviceProvider.GetRequiredService<OptometristaMenu>();
                         await optometristaMenu.ShowAsync();
-                    }
+                        break;
+                    default:
+                        Console.WriteLine("Rol no válido.");
+                        break;
                 }
             }
         }
 
-        private static void ConfigureServices()
+        private static IServiceCollection ConfigureServices()
         {
-            _configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-
             var services = new ServiceCollection();
 
-            // Registrar configuración y contexto de base de datos
-            services.AddSingleton<IConfiguration>(_configuration);
+            // Logging
+            services.AddLogging();
+
+            // Configuración
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            services.AddSingleton<IConfiguration>(configuration);
+
+            // Notificaciones
+            services.Configure<NoSQL.Application.Services.NotificacionOptions>(
+                configuration.GetSection("Notificaciones"));
+
+            // Couchbase
             services.AddSingleton<CouchbaseDbContext>();
 
-            // Registrar repositorios
+            // Repositories
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IPacienteRepository, PacienteRepository>();
+            services.AddScoped<IOptometristaRepository, OptometristaRepository>();
+            services.AddScoped<IConsultaRepository, ConsultaRepository>();
+            services.AddScoped<IProductoRepository, ProductoRepository>();
+            services.AddScoped<ICitaRepository, CitaRepository>();
             services.AddScoped<IVentaRepository, VentaRepository>();
             services.AddScoped<INotificacionRepository, NotificacionRepository>();
-            services.AddScoped<PacienteRepository>();
-            services.AddScoped<OptometristaRepository>();
-            services.AddScoped<ConsultaRepository>();
-            services.AddScoped<ProductoRepository>();
-            services.AddScoped<CitaRepository>();
 
-            // Registrar servicios de aplicación
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IOptometristaService, OptometristaService>();
-            services.AddScoped<IPacienteService, PacienteService>();
-            services.AddScoped<IConsultaService, ConsultaService>();
-            services.AddScoped<IProductoService, ProductoService>();
-            services.AddScoped<ICitaService, CitaService>();
+            // Application Services
+            services.AddScoped<AuthService>();
+            services.AddScoped<PacienteService>();
+            services.AddScoped<OptometristaService>();
+            services.AddScoped<ConsultaService>();
+            services.AddScoped<ProductoService>();
+            services.AddScoped<CitaService>();
+            services.AddScoped<VentaService>();
+            services.AddScoped<NotificacionService>();
+            services.AddScoped<INotificacionService, NotificacionService>();
+            services.AddScoped<UsuarioService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
 
-            _serviceProvider = services.BuildServiceProvider();
+            // CLI Adapters
+            services.AddScoped<IAuthService, AuthServiceAdapter>();
+            services.AddScoped<IPacienteService, PacienteServiceAdapter>();
+            services.AddScoped<IOptometristaService, OptometristaServiceAdapter>();
+            services.AddScoped<IConsultaService, ConsultaServiceAdapter>();
+            services.AddScoped<IProductoService, ProductoServiceAdapter>();
+            services.AddScoped<ICitaService, CitaServiceAdapter>();
+
+            // Menus
+            services.AddTransient<LoginMenu>();
+            services.AddTransient<AdminMenu>();
+            services.AddTransient<OptometristaMenu>();
+            services.AddTransient<PacienteMenu>();
+            services.AddTransient<OptometristaManagementMenu>();
+            services.AddTransient<PatientManagementMenu>();
+            services.AddTransient<ConsultationMenu>();
+            services.AddTransient<ProductSalesMenu>();
+            services.AddTransient<AppointmentMenu>();
+
+            return services;
         }
     }
 }

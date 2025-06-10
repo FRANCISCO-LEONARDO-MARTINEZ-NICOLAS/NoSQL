@@ -4,12 +4,12 @@ namespace NoSQL.Domain.Interfaces
 {
     public interface IUsuarioRepository
     {
-        Task<Usuario?> GetByIdAsync(Guid id);
-        Task<Usuario?> GetByEmailAsync(string email);
         Task<IEnumerable<Usuario>> GetAllAsync();
-        Task<Usuario> CreateAsync(Usuario usuario);
-        Task UpdateAsync(Usuario usuario);
-        Task DeleteAsync(Guid id);
-        Task<bool> ExistsByEmailAsync(string email);
+        Task<Usuario?> GetByIdAsync(string id);
+        Task<Usuario?> GetByEmailAsync(string correo);
+        Task<bool> ExistsByEmailAsync(string correo);
+        Task AddAsync(Usuario usuario);
+        Task UpdateAsync(string id, Usuario usuario);
+        Task DeleteAsync(string id);
     }
 } 

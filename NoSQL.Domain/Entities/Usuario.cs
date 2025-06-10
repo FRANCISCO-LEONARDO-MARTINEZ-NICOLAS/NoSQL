@@ -4,14 +4,14 @@ namespace NoSQL.Domain.Entities
 {
     public class Usuario
     {
-        public Guid Id { get; set; }
-        public string Nombre { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string Rol { get; set; } = string.Empty; // "Admin" o "Optometrista"
+        public string Id { get; set; } = string.Empty;
+        public required string Nombre { get; set; }
+        public required string Correo { get; set; } // <-- Aquí con mayúscula
+        public required string PasswordHash { get; set; }
+        public required string Rol { get; set; }
         public bool Activo { get; set; } = true;
         public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
         public DateTime? UltimoAcceso { get; set; }
         public string type { get; set; } = "usuario"; // Campo para consultas N1QL
     }
-} 
+}

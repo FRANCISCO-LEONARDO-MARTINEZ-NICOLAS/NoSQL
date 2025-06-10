@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using NoSQL.Application.Services;
+using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
 
 namespace NoSQL.API.Controllers
@@ -8,9 +8,9 @@ namespace NoSQL.API.Controllers
     [Route("api/[controller]")]
     public class ConsultasController : ControllerBase
     {
-        private readonly ConsultaService _service;
+        private readonly IConsultaService _service;
 
-        public ConsultasController(ConsultaService service)
+        public ConsultasController(IConsultaService service)
         {
             _service = service;
         }
@@ -23,7 +23,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var consulta = await _service.GetByIdAsync(id);
             if (consulta == null)
@@ -35,19 +35,22 @@ namespace NoSQL.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Consulta consulta)
         {
-            await _service.AddAsync(consulta);
+            var (success, message) = await _service.CreateAsync(consulta);
+            if (!success)
+                return BadRequest(message);
+
             return CreatedAtAction(nameof(GetById), new { id = consulta.Id }, consulta);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Consulta consulta)
+        public async Task<IActionResult> Put(string id, [FromBody] Consulta consulta)
         {
             await _service.UpdateAsync(id, consulta);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             await _service.DeleteAsync(id);
             return NoContent();

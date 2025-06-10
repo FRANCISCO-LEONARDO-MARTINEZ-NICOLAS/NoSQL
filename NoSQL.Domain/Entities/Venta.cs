@@ -2,9 +2,9 @@ namespace NoSQL.Domain.Entities
 {
     public class Venta
     {
-        public Guid Id { get; set; }
-        public Guid PacienteId { get; set; }
-        public Guid OptometristaId { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string PacienteId { get; set; } = string.Empty;
+        public string OptometristaId { get; set; } = string.Empty;
         public DateTime Fecha { get; set; } = DateTime.UtcNow;
         public decimal MontoTotal { get; set; }
         public required string MetodoPago { get; set; }

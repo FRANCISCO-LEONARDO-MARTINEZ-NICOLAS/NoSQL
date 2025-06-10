@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using NoSQL.Application.Services;
+using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
 
 namespace NoSQL.API.Controllers
@@ -8,9 +8,9 @@ namespace NoSQL.API.Controllers
     [Route("api/[controller]")]
     public class OptometristasController : ControllerBase
     {
-        private readonly OptometristaService _service;
+        private readonly IOptometristaService _service;
 
-        public OptometristasController(OptometristaService service)
+        public OptometristasController(IOptometristaService service)
         {
             _service = service;
         }
@@ -23,7 +23,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var optometrista = await _service.GetByIdAsync(id);
             if (optometrista == null)
@@ -35,19 +35,22 @@ namespace NoSQL.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Optometrista optometrista)
         {
-            await _service.AddAsync(optometrista);
+            var (success, message) = await _service.CreateAsync(optometrista);
+            if (!success)
+                return BadRequest(message);
+
             return CreatedAtAction(nameof(GetById), new { id = optometrista.Id }, optometrista);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Optometrista optometrista)
+        public async Task<IActionResult> Put(string id, [FromBody] Optometrista optometrista)
         {
             await _service.UpdateAsync(id, optometrista);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             await _service.DeleteAsync(id);
             return NoContent();

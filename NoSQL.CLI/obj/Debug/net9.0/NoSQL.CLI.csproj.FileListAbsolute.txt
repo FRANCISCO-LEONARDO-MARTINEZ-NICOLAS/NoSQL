@@ -56,3 +56,5 @@ D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.CLI\obj\Debug\n
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.CLI\obj\Debug\net9.0\NoSQL.CLI.pdb
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.CLI\obj\Debug\net9.0\NoSQL.CLI.genruntimeconfig.cache
 D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.CLI\obj\Debug\net9.0\ref\NoSQL.CLI.dll
+D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.CLI\bin\Debug\net9.0\BCrypt.Net-Next.dll
+D:\6to Semestre\NoSQL\Proyecto 3Parcial\Optica NoSQL\NoSQL\NoSQL.CLI\bin\Debug\net9.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll

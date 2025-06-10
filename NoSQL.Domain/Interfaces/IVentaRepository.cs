@@ -5,11 +5,11 @@ namespace NoSQL.Domain.Interfaces
     public interface IVentaRepository
     {
         Task<IEnumerable<Venta>> GetAllAsync();
-        Task<Venta?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Venta>> GetByPacienteIdAsync(Guid pacienteId);
-        Task<IEnumerable<Venta>> GetByOptometristaIdAsync(Guid optometristaId);
+        Task<Venta?> GetByIdAsync(string id);
+        Task<IEnumerable<Venta>> GetByPacienteIdAsync(string pacienteId);
+        Task<IEnumerable<Venta>> GetByOptometristaIdAsync(string optometristaId);
         Task CreateAsync(Venta venta);
         Task UpdateAsync(Venta venta);
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(string id);
     }
 } 

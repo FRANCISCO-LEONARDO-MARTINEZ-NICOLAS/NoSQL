@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using NoSQL.Application.Services;
+using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
 
 namespace NoSQL.API.Controllers
@@ -8,9 +8,9 @@ namespace NoSQL.API.Controllers
     [Route("api/[controller]")]
     public class ProductosController : ControllerBase
     {
-        private readonly ProductoService _service;
+        private readonly IProductoService _service;
 
-        public ProductosController(ProductoService service)
+        public ProductosController(IProductoService service)
         {
             _service = service;
         }
@@ -23,7 +23,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var producto = await _service.GetByIdAsync(id);
             if (producto == null)
@@ -35,19 +35,22 @@ namespace NoSQL.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Producto producto)
         {
-            await _service.AddAsync(producto);
+            var (success, message) = await _service.CreateAsync(producto);
+            if (!success)
+                return BadRequest(message);
+
             return CreatedAtAction(nameof(GetById), new { id = producto.Id }, producto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Producto producto)
+        public async Task<IActionResult> Put(string id, [FromBody] Producto producto)
         {
             await _service.UpdateAsync(id, producto);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             await _service.DeleteAsync(id);
             return NoContent();

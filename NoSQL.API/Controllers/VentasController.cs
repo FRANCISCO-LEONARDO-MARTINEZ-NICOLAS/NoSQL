@@ -25,7 +25,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<VentaResponseDto>> GetById(Guid id)
+        public async Task<ActionResult<VentaResponseDto>> GetById(string id)
         {
             var venta = await _ventaService.GetByIdAsync(id);
             if (venta == null)
@@ -35,7 +35,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("paciente/{pacienteId}")]
-        public async Task<ActionResult<IEnumerable<VentaResponseDto>>> GetByPacienteId(Guid pacienteId)
+        public async Task<ActionResult<IEnumerable<VentaResponseDto>>> GetByPacienteId(string pacienteId)
         {
             var ventas = await _ventaService.GetByPacienteIdAsync(pacienteId);
             var response = ventas.Select(v => MapToResponseDto(v));
@@ -43,7 +43,7 @@ namespace NoSQL.API.Controllers
         }
 
         [HttpGet("optometrista/{optometristaId}")]
-        public async Task<ActionResult<IEnumerable<VentaResponseDto>>> GetByOptometristaId(Guid optometristaId)
+        public async Task<ActionResult<IEnumerable<VentaResponseDto>>> GetByOptometristaId(string optometristaId)
         {
             var ventas = await _ventaService.GetByOptometristaIdAsync(optometristaId);
             var response = ventas.Select(v => MapToResponseDto(v));
@@ -66,22 +66,25 @@ namespace NoSQL.API.Controllers
                 }).ToList()
             };
 
-            var ventaCreada = await _ventaService.CreateAsync(venta);
-            return CreatedAtAction(nameof(GetById), new { id = ventaCreada.Id }, MapToResponseDto(ventaCreada));
+            var (success, message) = await _ventaService.CreateAsync(venta);
+            if (!success)
+                return BadRequest(message);
+
+            return CreatedAtAction(nameof(GetById), new { id = venta.Id }, MapToResponseDto(venta));
         }
 
         [HttpPut("{id}/estado")]
-        public async Task<ActionResult> UpdateEstado(Guid id, ActualizarEstadoVentaDto dto)
+        public async Task<ActionResult> UpdateEstado(string id, ActualizarEstadoVentaDto dto)
         {
-            var resultado = await _ventaService.ActualizarEstadoAsync(id, dto.NuevoEstado);
-            if (!resultado)
-                return NotFound();
+            var (success, message) = await _ventaService.ActualizarEstadoAsync(id, dto.NuevoEstado);
+            if (!success)
+                return NotFound(message);
 
             return NoContent();
         }
 
         [HttpPost("{id}/productos")]
-        public async Task<ActionResult> AddProducto(Guid id, CrearProductoVentaDto dto)
+        public async Task<ActionResult> AddProducto(string id, CrearProductoVentaDto dto)
         {
             var producto = new ProductoVenta
             {
@@ -90,15 +93,15 @@ namespace NoSQL.API.Controllers
                 PrecioUnitario = dto.PrecioUnitario
             };
 
-            var resultado = await _ventaService.AgregarProductoAsync(id, producto);
-            if (!resultado)
-                return NotFound();
+            var (success, message) = await _ventaService.AgregarProductoAsync(id, producto);
+            if (!success)
+                return NotFound(message);
 
             return NoContent();
         }
 
         [HttpGet("{id}/total")]
-        public async Task<ActionResult<decimal>> GetTotal(Guid id)
+        public async Task<ActionResult<decimal>> GetTotal(string id)
         {
             try
             {
@@ -132,4 +135,4 @@ namespace NoSQL.API.Controllers
             };
         }
     }
-} 
+}

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NoSQL.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65b79adb0ecb3ee8c29bd8a7ed124bfb93380a35")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4c1da4401327c68308e6a756a8a21274f874119")]
 [assembly: System.Reflection.AssemblyProductAttribute("NoSQL.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NoSQL.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
