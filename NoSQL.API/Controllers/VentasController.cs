@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NoSQL.API.DTOs;
 using NoSQL.Application.Interfaces;
 using NoSQL.Domain.Entities;
+using System.Linq;
 
 namespace NoSQL.API.Controllers
 {
@@ -22,6 +23,35 @@ namespace NoSQL.API.Controllers
             var ventas = await _ventaService.GetAllAsync();
             var response = ventas.Select(v => MapToResponseDto(v));
             return Ok(response);
+        }
+
+        [HttpGet("recent")]
+        public async Task<IActionResult> GetRecent()
+        {
+            try
+            {
+                var ventas = await _ventaService.GetAllAsync();
+                var recentVentas = ventas
+                    .OrderByDescending(v => v.Fecha)
+                    .Take(5)
+                    .ToList();
+
+                var result = recentVentas.Select(v => new
+                {
+                    id = v.Id,
+                    patient = v.PacienteId, // Aquí deberías obtener el nombre del paciente
+                    product = string.Join(", ", v.Productos.Select(p => p.Nombre)),
+                    amount = v.MontoTotal,
+                    status = v.Estado,
+                    date = v.Fecha.ToString("yyyy-MM-dd")
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error al obtener ventas recientes", error = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]

@@ -8,8 +8,8 @@ namespace NoSQL.Domain.Interfaces
         Task<Cita?> GetByIdAsync(string id);
         Task<IEnumerable<Cita>> GetByPacienteIdAsync(string id);
         Task<IEnumerable<Cita>> GetByOptometristaIdAsync(string id);
-        Task<IEnumerable<Cita>> GetByPacienteEmailAsync(string email);
-        Task<IEnumerable<Cita>> GetByOptometristaEmailAsync(string email);
+        Task<IEnumerable<Cita>> GetByPacientecorreoAsync(string correo);
+        Task<IEnumerable<Cita>> GetByOptometristacorreoAsync(string correo);
         Task AddAsync(Cita cita);
         Task UpdateAsync(string id, Cita cita);
         Task DeleteAsync(string id);

@@ -22,9 +22,9 @@ namespace NoSQL.CLI.Menus
             Console.Clear();
             Console.WriteLine("=== INICIO DE SESIÓN ===");
             
-            Console.Write("Email: ");
-            var email = Console.ReadLine() ?? string.Empty;
-            email = email.Trim().ToLower(); // <-- Normaliza el correo a minúsculas y sin espacios
+            Console.Write("correo: ");
+            var correo = Console.ReadLine() ?? string.Empty;
+            correo = correo.Trim().ToLower(); // <-- Normaliza el correo a minúsculas y sin espacios
             
             Console.Write("Contraseña: ");
             var password = ReadPassword();
@@ -32,7 +32,7 @@ namespace NoSQL.CLI.Menus
             Console.Write("Rol (Admin/Optometrista): ");
             var rol = Console.ReadLine()?.ToLower() ?? string.Empty;
 
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(rol))
+            if (string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(rol))
             {
                 Console.WriteLine("Error: Todos los campos son requeridos.");
                 return (false, null, null);
@@ -44,7 +44,7 @@ namespace NoSQL.CLI.Menus
                 return (false, null, null);
             }
 
-            var (success, message, user, token) = await _authService.LoginAsync(email, password, rol);
+            var (success, message, user, token) = await _authService.LoginAsync(correo, password, rol);
             
             if (!success)
             {

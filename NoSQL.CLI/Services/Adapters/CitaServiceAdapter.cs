@@ -50,16 +50,16 @@ namespace NoSQL.CLI.Services.Adapters
         }
 
         // Métodos auxiliares que usan los métodos base
-        public async Task<IEnumerable<Cita>> GetByPacienteEmailAsync(string email)
+        public async Task<IEnumerable<Cita>> GetByPacientecorreoAsync(string correo)
         {
             var citas = await GetAllAsync();
-            return citas.Where(c => c.PacienteEmail == email);
+            return citas.Where(c => c.Pacientecorreo == correo);
         }
 
-        public async Task<IEnumerable<Cita>> GetByOptometristaEmailAsync(string email)
+        public async Task<IEnumerable<Cita>> GetByOptometristacorreoAsync(string correo)
         {
             var citas = await GetAllAsync();
-            return citas.Where(c => c.OptometristaEmail == email);
+            return citas.Where(c => c.Optometristacorreo == correo);
         }
 
         public async Task<IEnumerable<Cita>> GetByFechaAsync(DateTime fecha)

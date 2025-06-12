@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NoSQL.CLI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4c1da4401327c68308e6a756a8a21274f874119")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8071e60e5d76e219626968b8b3388dca78e27129")]
 [assembly: System.Reflection.AssemblyProductAttribute("NoSQL.CLI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NoSQL.CLI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

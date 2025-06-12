@@ -32,10 +32,10 @@ namespace NoSQL.API.Controllers
             return Ok(paciente);
         }
 
-        [HttpGet("email/{correo}")]
-        public async Task<IActionResult> GetByEmail(string correo)
+        [HttpGet("correo/{correo}")]
+        public async Task<IActionResult> GetBycorreo(string correo)
         {
-            var paciente = await _service.GetByEmailAsync(correo);
+            var paciente = await _service.GetBycorreoAsync(correo);
             if (paciente == null)
                 return NotFound();
 

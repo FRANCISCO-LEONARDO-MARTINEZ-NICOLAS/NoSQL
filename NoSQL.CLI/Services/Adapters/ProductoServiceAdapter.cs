@@ -24,10 +24,10 @@ namespace NoSQL.CLI.Services.Adapters
             return await _productoService.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Producto>> GetByPacienteEmailAsync(string email)
+        public async Task<IEnumerable<Producto>> GetByPacientecorreoAsync(string correo)
         {
             var productos = await GetAllAsync();
-            return productos.Where(p => p.PacienteEmail == email);
+            return productos.Where(p => p.Pacientecorreo == correo);
         }
 
         public async Task<(bool Success, string Message)> CreateAsync(Producto producto)

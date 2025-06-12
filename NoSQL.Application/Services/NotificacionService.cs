@@ -109,7 +109,7 @@ namespace NoSQL.Application.Services
                     Body = notificacion.Mensaje,
                     IsBodyHtml = true
                 };
-                mailMessage.To.Add(notificacion.Correo);
+                mailMessage.To.Add(notificacion.correo);
                 await smtpClient.SendMailAsync(mailMessage);
                 notificacion.Estado = "Enviado";
                 notificacion.FechaEnvio = DateTime.UtcNow;
@@ -149,7 +149,7 @@ namespace NoSQL.Application.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     PacienteId = pacienteId,
-                    Correo = "leonardomtz000426@gmail.com", // Correo configurado
+                    correo = "leonardomtz000426@gmail.com", // correo configurado
                     Mensaje = $"Su producto {nombreProducto} está listo para recoger en la óptica.",
                     Estado = "Pendiente",
                     FechaEnvio = DateTime.UtcNow
@@ -163,7 +163,7 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> EnviarCorreoBienvenidaAsync(string email, string nombre)
+        public async Task<(bool Success, string Message)> EnviarcorreoBienvenidaAsync(string correo, string nombre)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace NoSQL.Application.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     PacienteId = string.Empty, // No es necesario para correos de bienvenida
-                    Correo = email,
+                    correo = correo,
                     Mensaje = $@"
                         <h2>¡Bienvenido/a a Óptica NoSQL, {nombre}!</h2>
                         <p>Gracias por registrarte en nuestro sistema. Estamos aquí para cuidar de tu salud visual.</p>
@@ -191,7 +191,7 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> EnviarCorreoCambioPasswordAsync(string email, string nombre)
+        public async Task<(bool Success, string Message)> EnviarcorreoCambioPasswordAsync(string correo, string nombre)
         {
             try
             {
@@ -199,7 +199,7 @@ namespace NoSQL.Application.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     PacienteId = string.Empty, // No es necesario para correos de cambio de contraseña
-                    Correo = email,
+                    correo = correo,
                     Mensaje = $@"
                         <h2>Cambio de Contraseña Exitoso</h2>
                         <p>Hola {nombre},</p>
@@ -220,7 +220,7 @@ namespace NoSQL.Application.Services
             }
         }
 
-        public async Task<(bool Success, string Message)> EnviarCorreoResetPasswordAsync(string email, string nombre, string nuevaPassword)
+        public async Task<(bool Success, string Message)> EnviarcorreoResetPasswordAsync(string correo, string nombre, string nuevaPassword)
         {
             try
             {
@@ -228,7 +228,7 @@ namespace NoSQL.Application.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     PacienteId = string.Empty, // No es necesario para correos de reset de contraseña
-                    Correo = email,
+                    correo = correo,
                     Mensaje = $@"
                         <h2>Nueva Contraseña Generada</h2>
                         <p>Hola {nombre},</p>

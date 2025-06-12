@@ -24,9 +24,9 @@ namespace NoSQL.CLI.Services.Adapters
             return await _pacienteService.GetByIdAsync(id);
         }
 
-        public async Task<Paciente?> GetByEmailAsync(string correo)
+        public async Task<Paciente?> GetBycorreoAsync(string correo)
         {
-            return await _pacienteService.GetByEmailAsync(correo);
+            return await _pacienteService.GetBycorreoAsync(correo);
         }
 
         public async Task<Paciente?> GetByDniAsync(string dni)

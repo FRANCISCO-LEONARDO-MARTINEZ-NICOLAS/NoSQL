@@ -34,16 +34,16 @@ namespace NoSQL.CLI.Services.Adapters
             return await _consultaService.GetByOptometristaIdAsync(optometristaId);
         }
 
-        public async Task<IEnumerable<Consulta>> GetByPacienteEmailAsync(string email)
+        public async Task<IEnumerable<Consulta>> GetByPacientecorreoAsync(string correo)
         {
             var consultas = await GetAllAsync();
-            return consultas.Where(c => c.PacienteEmail == email);
+            return consultas.Where(c => c.Pacientecorreo == correo);
         }
 
-        public async Task<IEnumerable<Consulta>> GetByOptometristaEmailAsync(string email)
+        public async Task<IEnumerable<Consulta>> GetByOptometristacorreoAsync(string correo)
         {
             var consultas = await GetAllAsync();
-            return consultas.Where(c => c.OptometristaEmail == email);
+            return consultas.Where(c => c.Optometristacorreo == correo);
         }
 
         public async Task<IEnumerable<Consulta>> GetByFechaAsync(DateTime fecha)

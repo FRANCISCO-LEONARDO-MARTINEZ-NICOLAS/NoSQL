@@ -36,6 +36,18 @@ builder.Services.Configure<SimpleConsoleFormatterOptions>(options =>
 // Add services to the container.
 builder.Services.AddControllers();
 
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 // Configurar Couchbase
 builder.Services.AddSingleton<CouchbaseDbContext>();
 
@@ -121,7 +133,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configuracion de  HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -129,6 +141,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

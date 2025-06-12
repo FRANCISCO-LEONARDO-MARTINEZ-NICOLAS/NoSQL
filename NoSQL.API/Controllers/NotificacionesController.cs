@@ -56,7 +56,7 @@ namespace NoSQL.API.Controllers
             var notificacion = new Notificacion
             {
                 PacienteId = dto.PacienteId,
-                Correo = dto.Correo,
+                correo = dto.correo,
                 Mensaje = dto.Mensaje
             };
 
@@ -93,7 +93,7 @@ namespace NoSQL.API.Controllers
             {
                 Id = notificacion.Id,
                 PacienteId = notificacion.PacienteId,
-                Correo = notificacion.Correo,
+                correo = notificacion.correo,
                 Mensaje = notificacion.Mensaje,
                 FechaEnvio = notificacion.FechaEnvio,
                 Estado = notificacion.Estado,

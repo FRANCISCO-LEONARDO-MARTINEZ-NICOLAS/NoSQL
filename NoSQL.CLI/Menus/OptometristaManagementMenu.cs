@@ -9,16 +9,16 @@ namespace NoSQL.CLI.Menus
     public class OptometristaManagementMenu : BaseMenu
     {
         private readonly IOptometristaService _optometristaService;
-        private readonly string _userEmail;
+        private readonly string _usercorreo;
         private readonly string _userRole;
 
         public OptometristaManagementMenu(
             IOptometristaService optometristaService,
-            string userEmail,
+            string usercorreo,
             string userRole)
         {
             _optometristaService = optometristaService;
-            _userEmail = userEmail;
+            _usercorreo = usercorreo;
             _userRole = userRole;
         }
 
@@ -78,7 +78,7 @@ namespace NoSQL.CLI.Menus
                     Console.WriteLine($"Nombre: {optometrista.Nombre} {optometrista.Apellido}");
                     Console.WriteLine($"Cédula: {optometrista.CedulaProfesional}");
                     Console.WriteLine($"Especialidad: {optometrista.Especialidad}");
-                    Console.WriteLine($"Correo: {optometrista.Correo}");
+                    Console.WriteLine($"correo: {optometrista.correo}");
                     Console.WriteLine($"Celular: {optometrista.Celular}");
                     Console.WriteLine($"Emergencia: {optometrista.NumeroEmergencia}");
                     Console.WriteLine($"Teléfono: {optometrista.Telefono}");
@@ -122,7 +122,7 @@ namespace NoSQL.CLI.Menus
                 Console.WriteLine($"Nombre: {optometrista.Nombre} {optometrista.Apellido}");
                 Console.WriteLine($"Cédula: {optometrista.CedulaProfesional}");
                 Console.WriteLine($"Especialidad: {optometrista.Especialidad}");
-                Console.WriteLine($"Correo: {optometrista.Correo}");
+                Console.WriteLine($"correo: {optometrista.correo}");
                 Console.WriteLine($"Celular: {optometrista.Celular}");
                 Console.WriteLine($"Emergencia: {optometrista.NumeroEmergencia}");
                 Console.WriteLine($"Teléfono: {optometrista.Telefono}");
@@ -147,7 +147,7 @@ namespace NoSQL.CLI.Menus
             var cedula = Console.ReadLine()?.Trim();
             Console.Write("Especialidad: ");
             var especialidad = Console.ReadLine()?.Trim();
-            Console.Write("Correo: ");
+            Console.Write("correo: ");
             var correo = Console.ReadLine()?.Trim();
             Console.Write("Celular: ");
             var celular = Console.ReadLine()?.Trim();
@@ -174,7 +174,7 @@ namespace NoSQL.CLI.Menus
                 Apellido = apellido,
                 CedulaProfesional = cedula,
                 Especialidad = especialidad,
-                Correo = correo,
+                correo = correo,
                 Celular = celular,
                 NumeroEmergencia = emergencia,
                 Telefono = telefono,
@@ -234,10 +234,10 @@ namespace NoSQL.CLI.Menus
             if (!string.IsNullOrEmpty(especialidad))
                 optometrista.Especialidad = especialidad;
 
-            Console.Write($"Correo [{optometrista.Correo}]: ");
+            Console.Write($"correo [{optometrista.correo}]: ");
             var correo = Console.ReadLine()?.Trim();
             if (!string.IsNullOrEmpty(correo))
-                optometrista.Correo = correo;
+                optometrista.correo = correo;
 
             Console.Write($"Celular [{optometrista.Celular}]: ");
             var celular = Console.ReadLine()?.Trim();

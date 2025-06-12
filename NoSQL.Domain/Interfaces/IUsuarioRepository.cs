@@ -6,8 +6,8 @@ namespace NoSQL.Domain.Interfaces
     {
         Task<IEnumerable<Usuario>> GetAllAsync();
         Task<Usuario?> GetByIdAsync(string id);
-        Task<Usuario?> GetByEmailAsync(string correo);
-        Task<bool> ExistsByEmailAsync(string correo);
+        Task<Usuario?> GetBycorreoAsync(string correo);
+        Task<bool> ExistsBycorreoAsync(string correo);
         Task AddAsync(Usuario usuario);
         Task UpdateAsync(string id, Usuario usuario);
         Task DeleteAsync(string id);

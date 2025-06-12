@@ -13,18 +13,18 @@ namespace NoSQL.CLI.Menus
     {
         private readonly IProductoService _productoService;
         private readonly IPacienteService _pacienteService;
-        private readonly string _userEmail;
+        private readonly string _usercorreo;
         private readonly string _userRole;
 
         public ProductSalesMenu(
             IProductoService productoService,
             IPacienteService pacienteService,
-            string userEmail,
+            string usercorreo,
             string userRole)
         {
             _productoService = productoService;
             _pacienteService = pacienteService;
-            _userEmail = userEmail;
+            _usercorreo = usercorreo;
             _userRole = userRole;
         }
 
@@ -89,8 +89,8 @@ namespace NoSQL.CLI.Menus
                     Console.WriteLine($"Tipo: {producto.Tipo}");
                     Console.WriteLine($"Descripción: {producto.Descripcion}");
                     Console.WriteLine($"Precio: {producto.Precio:C}");
-                    Console.WriteLine($"Paciente: {producto.PacienteEmail}");
-                    Console.WriteLine($"Optometrista: {producto.OptometristaEmail}");
+                    Console.WriteLine($"Paciente: {producto.Pacientecorreo}");
+                    Console.WriteLine($"Optometrista: {producto.Optometristacorreo}");
                     Console.WriteLine($"Fecha de venta: {producto.FechaVenta}");
                     Console.WriteLine($"Fecha de entrega estimada: {producto.FechaEntregaEstimada}");
                     Console.WriteLine($"Estado: {producto.Estado}");
@@ -108,18 +108,18 @@ namespace NoSQL.CLI.Menus
             Console.Clear();
             Console.WriteLine("=== Productos por Paciente ===\n");
 
-            string? pacienteEmail;
+            string? pacientecorreo;
             if (_userRole == "Paciente")
             {
-                pacienteEmail = _userEmail;
+                pacientecorreo = _usercorreo;
             }
             else
             {
-                Console.Write("Correo del paciente: ");
-                pacienteEmail = Console.ReadLine()?.Trim();
-                if (string.IsNullOrEmpty(pacienteEmail))
+                Console.Write("correo del paciente: ");
+                pacientecorreo = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(pacientecorreo))
                 {
-                    Console.WriteLine("\nCorreo de paciente requerido. Presione cualquier tecla para continuar...");
+                    Console.WriteLine("\ncorreo de paciente requerido. Presione cualquier tecla para continuar...");
                     Console.ReadKey();
                     return;
                 }
@@ -127,7 +127,7 @@ namespace NoSQL.CLI.Menus
 
             // Filtra en memoria usando el campo correcto
             var productos = (await _productoService.GetAllAsync())
-                .Where(p => p.PacienteEmail == pacienteEmail)
+                .Where(p => p.Pacientecorreo == pacientecorreo)
                 .ToList();
 
             if (!productos.Any())
@@ -143,7 +143,7 @@ namespace NoSQL.CLI.Menus
                     Console.WriteLine($"Tipo: {producto.Tipo}");
                     Console.WriteLine($"Descripción: {producto.Descripcion}");
                     Console.WriteLine($"Precio: {producto.Precio:C}");
-                    Console.WriteLine($"Optometrista: {producto.OptometristaEmail}");
+                    Console.WriteLine($"Optometrista: {producto.Optometristacorreo}");
                     Console.WriteLine($"Fecha de venta: {producto.FechaVenta}");
                     Console.WriteLine($"Fecha de entrega estimada: {producto.FechaEntregaEstimada}");
                     Console.WriteLine($"Estado: {producto.Estado}");
@@ -161,35 +161,35 @@ namespace NoSQL.CLI.Menus
             Console.Clear();
             Console.WriteLine("=== Registrar Nuevo Producto ===\n");
 
-            string? pacienteEmail;
+            string? pacientecorreo;
             if (_userRole == "Paciente")
             {
-                pacienteEmail = _userEmail;
+                pacientecorreo = _usercorreo;
             }
             else
             {
-                Console.Write("Email del paciente: ");
-                pacienteEmail = Console.ReadLine()?.Trim();
-                if (string.IsNullOrEmpty(pacienteEmail))
+                Console.Write("correo del paciente: ");
+                pacientecorreo = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(pacientecorreo))
                 {
-                    Console.WriteLine("\nEmail de paciente requerido. Presione cualquier tecla para continuar...");
+                    Console.WriteLine("\ncorreo de paciente requerido. Presione cualquier tecla para continuar...");
                     Console.ReadKey();
                     return;
                 }
             }
 
-            string? optometristaEmail;
+            string? optometristacorreo;
             if (_userRole == "Optometrista")
             {
-                optometristaEmail = _userEmail;
+                optometristacorreo = _usercorreo;
             }
             else
             {
-                Console.Write("Email del optometrista: ");
-                optometristaEmail = Console.ReadLine()?.Trim();
-                if (string.IsNullOrEmpty(optometristaEmail))
+                Console.Write("correo del optometrista: ");
+                optometristacorreo = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(optometristacorreo))
                 {
-                    Console.WriteLine("\nEmail de optometrista requerido. Presione cualquier tecla para continuar...");
+                    Console.WriteLine("\ncorreo de optometrista requerido. Presione cualquier tecla para continuar...");
                     Console.ReadKey();
                     return;
                 }
@@ -266,8 +266,8 @@ namespace NoSQL.CLI.Menus
                 Tipo = tipo,
                 Descripcion = descripcion,
                 Precio = precio,
-                PacienteEmail = pacienteEmail,
-                OptometristaEmail = optometristaEmail,
+                Pacientecorreo = pacientecorreo,
+                Optometristacorreo = optometristacorreo,
                 FechaVenta = DateTime.UtcNow,
                 FechaEntregaEstimada = fechaEntrega,
                 Estado = "Pendiente",

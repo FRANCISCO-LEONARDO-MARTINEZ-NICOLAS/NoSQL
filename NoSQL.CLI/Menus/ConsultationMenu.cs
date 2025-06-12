@@ -11,20 +11,20 @@ namespace NoSQL.CLI.Menus
         private readonly IConsultaService _consultaService;
         private readonly IPacienteService _pacienteService;
         private readonly IOptometristaService _optometristaService;
-        private readonly string _userEmail;
+        private readonly string _usercorreo;
         private readonly string _userRole;
 
         public ConsultationMenu(
             IConsultaService consultaService,
             IPacienteService pacienteService,
             IOptometristaService optometristaService,
-            string userEmail,
+            string usercorreo,
             string userRole)
         {
             _consultaService = consultaService;
             _pacienteService = pacienteService;
             _optometristaService = optometristaService;
-            _userEmail = userEmail;
+            _usercorreo = usercorreo;
             _userRole = userRole;
         }
 
@@ -74,9 +74,9 @@ namespace NoSQL.CLI.Menus
             var consultas = await _consultaService.GetAllAsync();
 
             if (_userRole == "Paciente")
-                consultas = consultas.Where(c => c.PacienteEmail == _userEmail).ToList();
+                consultas = consultas.Where(c => c.Pacientecorreo == _usercorreo).ToList();
             else if (_userRole == "Optometrista")
-                consultas = consultas.Where(c => c.OptometristaEmail == _userEmail).ToList();
+                consultas = consultas.Where(c => c.Optometristacorreo == _usercorreo).ToList();
 
             if (!consultas.Any())
             {
@@ -87,8 +87,8 @@ namespace NoSQL.CLI.Menus
                 foreach (var consulta in consultas)
                 {
                     Console.WriteLine($"ID: {consulta.Id}");
-                    Console.WriteLine($"Paciente: {consulta.PacienteEmail}");
-                    Console.WriteLine($"Optometrista: {consulta.OptometristaEmail}");
+                    Console.WriteLine($"Paciente: {consulta.Pacientecorreo}");
+                    Console.WriteLine($"Optometrista: {consulta.Optometristacorreo}");
                     Console.WriteLine($"Fecha: {consulta.Fecha}");
                     Console.WriteLine($"Motivo: {consulta.Motivo}");
                     Console.WriteLine($"Diagnóstico: {consulta.Diagnostico}");
@@ -126,8 +126,8 @@ namespace NoSQL.CLI.Menus
                 foreach (var consulta in filtradas)
                 {
                     Console.WriteLine($"ID: {consulta.Id}");
-                    Console.WriteLine($"Paciente: {consulta.PacienteEmail}");
-                    Console.WriteLine($"Optometrista: {consulta.OptometristaEmail}");
+                    Console.WriteLine($"Paciente: {consulta.Pacientecorreo}");
+                    Console.WriteLine($"Optometrista: {consulta.Optometristacorreo}");
                     Console.WriteLine($"Fecha: {consulta.Fecha}");
                     Console.WriteLine($"Motivo: {consulta.Motivo}");
                     Console.WriteLine($"Diagnóstico: {consulta.Diagnostico}");
@@ -146,12 +146,12 @@ namespace NoSQL.CLI.Menus
             Console.WriteLine("=== Registrar Nueva Consulta ===\n");
 
             // Obtener datos de paciente
-            string pacienteEmail;
+            string pacientecorreo;
             string pacienteId;
             if (_userRole == "Paciente")
             {
-                pacienteEmail = _userEmail;
-                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.Correo == pacienteEmail);
+                pacientecorreo = _usercorreo;
+                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.correo == pacientecorreo);
                 if (paciente == null)
                 {
                     Console.WriteLine("\nPaciente no encontrado. Presione cualquier tecla para continuar...");
@@ -162,9 +162,9 @@ namespace NoSQL.CLI.Menus
             }
             else
             {
-                Console.Write("Email del paciente: ");
-                pacienteEmail = Console.ReadLine()?.Trim() ?? "";
-                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.Correo == pacienteEmail);
+                Console.Write("correo del paciente: ");
+                pacientecorreo = Console.ReadLine()?.Trim() ?? "";
+                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.correo == pacientecorreo);
                 if (paciente == null)
                 {
                     Console.WriteLine("\nPaciente no encontrado. Presione cualquier tecla para continuar...");
@@ -175,12 +175,12 @@ namespace NoSQL.CLI.Menus
             }
 
             // Obtener datos de optometrista
-            string optometristaEmail;
+            string optometristacorreo;
             string optometristaId;
             if (_userRole == "Optometrista")
             {
-                optometristaEmail = _userEmail;
-                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.Correo == optometristaEmail);
+                optometristacorreo = _usercorreo;
+                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.correo == optometristacorreo);
                 if (optometrista == null)
                 {
                     Console.WriteLine("\nOptometrista no encontrado. Presione cualquier tecla para continuar...");
@@ -191,9 +191,9 @@ namespace NoSQL.CLI.Menus
             }
             else
             {
-                Console.Write("Email del optometrista: ");
-                optometristaEmail = Console.ReadLine()?.Trim() ?? "";
-                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.Correo == optometristaEmail);
+                Console.Write("correo del optometrista: ");
+                optometristacorreo = Console.ReadLine()?.Trim() ?? "";
+                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.correo == optometristacorreo);
                 if (optometrista == null)
                 {
                     Console.WriteLine("\nOptometrista no encontrado. Presione cualquier tecla para continuar...");
@@ -228,8 +228,8 @@ namespace NoSQL.CLI.Menus
                 Id = Guid.NewGuid().ToString(),
                 PacienteId = pacienteId,
                 OptometristaId = optometristaId,
-                PacienteEmail = pacienteEmail,
-                OptometristaEmail = optometristaEmail,
+                Pacientecorreo = pacientecorreo,
+                Optometristacorreo = optometristacorreo,
                 Fecha = DateTime.UtcNow,
                 Motivo = motivo,
                 Sintomas = sintomas,
@@ -252,9 +252,9 @@ namespace NoSQL.CLI.Menus
             // Mostrar consultas disponibles
             var consultas = await _consultaService.GetAllAsync();
             if (_userRole == "Paciente")
-                consultas = consultas.Where(c => c.PacienteEmail == _userEmail).ToList();
+                consultas = consultas.Where(c => c.Pacientecorreo == _usercorreo).ToList();
             else if (_userRole == "Optometrista")
-                consultas = consultas.Where(c => c.OptometristaEmail == _userEmail).ToList();
+                consultas = consultas.Where(c => c.Optometristacorreo == _usercorreo).ToList();
 
             if (!consultas.Any())
             {
@@ -267,8 +267,8 @@ namespace NoSQL.CLI.Menus
             foreach (var consulta in consultas)
             {
                 Console.WriteLine($"ID: {consulta.Id}");
-                Console.WriteLine($"Paciente: {consulta.PacienteEmail}");
-                Console.WriteLine($"Optometrista: {consulta.OptometristaEmail}");
+                Console.WriteLine($"Paciente: {consulta.Pacientecorreo}");
+                Console.WriteLine($"Optometrista: {consulta.Optometristacorreo}");
                 Console.WriteLine($"Fecha: {consulta.Fecha}");
                 Console.WriteLine($"Motivo: {consulta.Motivo}");
                 Console.WriteLine("------------------------");

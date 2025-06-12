@@ -22,7 +22,7 @@ namespace NoSQL.API.Controllers
             if (string.IsNullOrEmpty(request.Rol))
                 return BadRequest(new { message = "El rol es requerido (Admin u Optometrista)" });
 
-            var (success, message, user, token) = await _authService.LoginAsync(request.Email, request.Password, request.Rol);
+            var (success, message, user, token) = await _authService.LoginAsync(request.Correo, request.Password, request.Rol);
             if (!success)
                 return BadRequest(new { message });
 
@@ -36,7 +36,7 @@ namespace NoSQL.API.Controllers
             var usuario = new Usuario
             {
                 Nombre = request.Nombre,
-                Email = request.Email,
+                Correo = request.Correo,
                 Rol = request.Rol,
                 PasswordHash = "temp",
             };
@@ -48,15 +48,33 @@ namespace NoSQL.API.Controllers
             return Ok(new { message });
         }
 
+        [HttpPost("create-test-user")]
+        public async Task<IActionResult> CreateTestUser()
+        {
+            var usuario = new Usuario
+            {
+                Nombre = "Usuario de Prueba",
+                Correo = "test@opticare.com",
+                Rol = "admin",
+                PasswordHash = "temp",
+            };
+
+            var (success, message) = await _authService.RegisterAsync(usuario, "123456");
+            if (!success)
+                return BadRequest(new { message });
+
+            return Ok(new { message, user = new { correo = usuario.Correo, password = "123456" } });
+        }
+
         [HttpPost("change-password")]
         [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-            if (string.IsNullOrEmpty(email))
-                return BadRequest(new { message = "No se pudo obtener el email del usuario autenticado." });
+            var correo = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(correo))
+                return BadRequest(new { message = "No se pudo obtener el correo del usuario autenticado." });
 
-            var (success, message) = await _authService.ChangePasswordAsync(email, request.CurrentPassword, request.NewPassword);
+            var (success, message) = await _authService.ChangePasswordAsync(correo, request.CurrentPassword, request.NewPassword);
             if (!success)
                 return BadRequest(new { message });
 
@@ -66,7 +84,7 @@ namespace NoSQL.API.Controllers
 
     public class LoginRequest
     {
-        public string Email { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Rol { get; set; } = string.Empty;
     }
@@ -74,7 +92,7 @@ namespace NoSQL.API.Controllers
     public class RegisterRequest
     {
         public string Nombre { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Rol { get; set; } = string.Empty;
     }

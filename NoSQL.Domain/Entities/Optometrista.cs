@@ -2,7 +2,7 @@ namespace NoSQL.Domain.Entities
 {
     public class Optometrista
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public required string Nombre { get; set; }
         public required string Apellido { get; set; }
         public required string CedulaProfesional { get; set; }

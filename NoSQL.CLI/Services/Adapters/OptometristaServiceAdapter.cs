@@ -24,10 +24,10 @@ namespace NoSQL.CLI.Services.Adapters
             return await _optometristaService.GetByIdAsync(id);
         }
 
-        public async Task<Optometrista?> GetByEmailAsync(string correo)
+        public async Task<Optometrista?> GetBycorreoAsync(string correo)
         {
             var optometristas = await GetAllAsync();
-            return optometristas.FirstOrDefault(o => o.Correo == correo);
+            return optometristas.FirstOrDefault(o => o.correo == correo);
         }
 
         public async Task<(bool Success, string Message)> CreateAsync(Optometrista optometrista)

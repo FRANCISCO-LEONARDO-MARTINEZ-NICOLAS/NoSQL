@@ -54,18 +54,18 @@ namespace NoSQL.Infrastructure.Repositories
             return await result.Rows.ToListAsync();
         }
 
-        public async Task<IEnumerable<Cita>> GetByPacienteEmailAsync(string email)
+        public async Task<IEnumerable<Cita>> GetByPacientecorreoAsync(string correo)
         {
-            var query = "SELECT c.* FROM `citas` c WHERE c.PacienteEmail = $email";
-            var options = new QueryOptions().Parameter("email", email);
+            var query = "SELECT c.* FROM `citas` c WHERE c.Pacientecorreo = $correo";
+            var options = new QueryOptions().Parameter("correo", correo);
             var result = await _cluster.QueryAsync<Cita>(query, options);
             return await result.Rows.ToListAsync();
         }
 
-        public async Task<IEnumerable<Cita>> GetByOptometristaEmailAsync(string email)
+        public async Task<IEnumerable<Cita>> GetByOptometristacorreoAsync(string correo)
         {
-            var query = "SELECT c.* FROM `citas` c WHERE c.OptometristaEmail = $email";
-            var options = new QueryOptions().Parameter("email", email);
+            var query = "SELECT c.* FROM `citas` c WHERE c.Optometristacorreo = $correo";
+            var options = new QueryOptions().Parameter("correo", correo);
             var result = await _cluster.QueryAsync<Cita>(query, options);
             return await result.Rows.ToListAsync();
         }

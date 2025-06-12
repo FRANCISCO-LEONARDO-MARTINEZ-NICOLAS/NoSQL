@@ -22,6 +22,34 @@ namespace NoSQL.API.Controllers
             return Ok(citas);
         }
 
+        [HttpGet("today")]
+        public async Task<IActionResult> GetToday()
+        {
+            try
+            {
+                var citas = await _service.GetAllAsync();
+                var today = DateTime.Today;
+                var todayCitas = citas.Where(c => c.FechaHora.Date == today).ToList();
+
+                var result = todayCitas.Select(c => new
+                {
+                    id = c.Id,
+                    time = c.FechaHora.ToString("HH:mm"),
+                    patientName = "Paciente", // Simplificado por ahora
+                    type = c.Tipo ?? "Consulta",
+                    status = c.Estado?.ToLower() ?? "programada",
+                    duration = "30 min"
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Retornar lista vacía en caso de error
+                return Ok(new List<object>());
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {

@@ -13,10 +13,10 @@ namespace NoSQL.CLI.Services.Adapters
             _authService = authService;
         }
 
-        public async Task<(bool Success, string Message, Usuario? User, string? Token)> LoginAsync(string email, string password, string rol)
+        public async Task<(bool Success, string Message, Usuario? User, string? Token)> LoginAsync(string correo, string password, string rol)
         {
             // Implementación base que usa el servicio de aplicación
-            return await _authService.LoginAsync(email, password, rol);
+            return await _authService.LoginAsync(correo, password, rol);
         }
 
         public async Task<(bool Success, string Message)> RegisterAsync(Usuario usuario, string password)
@@ -24,14 +24,14 @@ namespace NoSQL.CLI.Services.Adapters
             return await _authService.RegisterAsync(usuario, password);
         }
 
-        public async Task<(bool Success, string Message)> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+        public async Task<(bool Success, string Message)> ChangePasswordAsync(string correo, string currentPassword, string newPassword)
         {
-            return await _authService.ChangePasswordAsync(email, currentPassword, newPassword);
+            return await _authService.ChangePasswordAsync(correo, currentPassword, newPassword);
         }
 
-        public async Task<(bool Success, string Message)> ResetPasswordAsync(string email)
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(string correo)
         {
-            return await _authService.ResetPasswordAsync(email);
+            return await _authService.ResetPasswordAsync(correo);
         }
 
         public async Task<(bool Success, string Message)> ValidateTokenAsync(string token)

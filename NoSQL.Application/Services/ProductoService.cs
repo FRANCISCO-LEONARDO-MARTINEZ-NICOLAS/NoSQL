@@ -23,14 +23,14 @@ namespace NoSQL.Application.Services
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Producto>> GetByPacienteEmailAsync(string email)
+        public async Task<IEnumerable<Producto>> GetByPacientecorreoAsync(string correo)
         {
-            return await _repository.GetByPacienteEmailAsync(email);
+            return await _repository.GetByPacientecorreoAsync(correo);
         }
 
-        public async Task<IEnumerable<Producto>> GetByOptometristaEmailAsync(string email)
+        public async Task<IEnumerable<Producto>> GetByOptometristacorreoAsync(string correo)
         {
-            return await _repository.GetByOptometristaEmailAsync(email);
+            return await _repository.GetByOptometristacorreoAsync(correo);
         }
 
         public async Task<(bool Success, string Message)> CreateAsync(Producto producto)

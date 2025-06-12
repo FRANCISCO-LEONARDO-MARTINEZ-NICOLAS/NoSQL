@@ -11,16 +11,16 @@ namespace NoSQL.CLI.Menus
     public class PatientManagementMenu : BaseMenu
     {
         private readonly IPacienteService _pacienteService;
-        private readonly string _userEmail;
+        private readonly string _usercorreo;
         private readonly string _userRole;
 
         public PatientManagementMenu(
             IPacienteService pacienteService,
-            string userEmail,
+            string usercorreo,
             string userRole)
         {
             _pacienteService = pacienteService;
-            _userEmail = userEmail;
+            _usercorreo = usercorreo;
             _userRole = userRole;
         }
 
@@ -31,7 +31,7 @@ namespace NoSQL.CLI.Menus
                 Console.Clear();
                 Console.WriteLine("=== Gestión de Pacientes ===\n");
                 Console.WriteLine("1. Ver todos los pacientes");
-                Console.WriteLine("2. Buscar paciente por email");
+                Console.WriteLine("2. Buscar paciente por correo");
                 Console.WriteLine("3. Buscar paciente por DNI");
                 Console.WriteLine("4. Registrar nuevo paciente");
                 Console.WriteLine("5. Actualizar paciente");
@@ -45,7 +45,7 @@ namespace NoSQL.CLI.Menus
                         await MostrarTodosLosPacientesAsync();
                         break;
                     case "2":
-                        await BuscarPacientePorEmailAsync();
+                        await BuscarPacientePorcorreoAsync();
                         break;
                     case "3":
                         await BuscarPacientePorDniAsync();
@@ -82,7 +82,7 @@ namespace NoSQL.CLI.Menus
                 {
                     Console.WriteLine($"ID: {paciente.Id}");
                     Console.WriteLine($"Nombre: {paciente.Nombre} {paciente.Apellido}");
-                    Console.WriteLine($"Email: {paciente.Correo}");
+                    Console.WriteLine($"correo: {paciente.correo}");
                     Console.WriteLine($"DNI: {paciente.Dni}");
                     Console.WriteLine($"Teléfono: {paciente.Telefono}");
                     Console.WriteLine($"Dirección: {paciente.Direccion}");
@@ -98,21 +98,21 @@ namespace NoSQL.CLI.Menus
             Console.ReadKey();
         }
 
-        private async Task BuscarPacientePorEmailAsync()
+        private async Task BuscarPacientePorcorreoAsync()
         {
             Console.Clear();
-            Console.WriteLine("=== Buscar Paciente por Email ===\n");
+            Console.WriteLine("=== Buscar Paciente por correo ===\n");
 
-            Console.Write("Email del paciente: ");
-            var email = Console.ReadLine()?.Trim();
-            if (string.IsNullOrEmpty(email))
+            Console.Write("correo del paciente: ");
+            var correo = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(correo))
             {
-                Console.WriteLine("\nEmail requerido. Presione cualquier tecla para continuar...");
+                Console.WriteLine("\ncorreo requerido. Presione cualquier tecla para continuar...");
                 Console.ReadKey();
                 return;
             }
 
-            var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.Correo == email);
+            var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.correo == correo);
             if (paciente == null)
             {
                 Console.WriteLine("\nPaciente no encontrado. Presione cualquier tecla para continuar...");
@@ -123,7 +123,7 @@ namespace NoSQL.CLI.Menus
             Console.WriteLine("\nDatos del paciente:");
             Console.WriteLine($"ID: {paciente.Id}");
             Console.WriteLine($"Nombre: {paciente.Nombre} {paciente.Apellido}");
-            Console.WriteLine($"Email: {paciente.Correo}");
+            Console.WriteLine($"correo: {paciente.correo}");
             Console.WriteLine($"DNI: {paciente.Dni}");
             Console.WriteLine($"Teléfono: {paciente.Telefono}");
             Console.WriteLine($"Dirección: {paciente.Direccion}");
@@ -161,7 +161,7 @@ namespace NoSQL.CLI.Menus
             Console.WriteLine("\nDatos del paciente:");
             Console.WriteLine($"ID: {paciente.Id}");
             Console.WriteLine($"Nombre: {paciente.Nombre} {paciente.Apellido}");
-            Console.WriteLine($"Email: {paciente.Correo}");
+            Console.WriteLine($"correo: {paciente.correo}");
             Console.WriteLine($"DNI: {paciente.Dni}");
             Console.WriteLine($"Teléfono: {paciente.Telefono}");
             Console.WriteLine($"Dirección: {paciente.Direccion}");
@@ -197,11 +197,11 @@ namespace NoSQL.CLI.Menus
                 return;
             }
 
-            Console.Write("Email: ");
-            var email = Console.ReadLine()?.Trim();
-            if (string.IsNullOrEmpty(email))
+            Console.Write("correo: ");
+            var correo = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(correo))
             {
-                Console.WriteLine("\nEmail requerido. Presione cualquier tecla para continuar...");
+                Console.WriteLine("\ncorreo requerido. Presione cualquier tecla para continuar...");
                 Console.ReadKey();
                 return;
             }
@@ -284,7 +284,7 @@ namespace NoSQL.CLI.Menus
                 Nombre = nombre,
                 Apellido = apellido,
                 Dni = dni,
-                Correo = email,
+                correo = correo,
                 Telefono = telefono,
                 Direccion = direccion,
                 FechaNacimiento = fechaNacimiento,
@@ -333,10 +333,10 @@ namespace NoSQL.CLI.Menus
             if (!string.IsNullOrEmpty(apellido))
                 paciente.Apellido = apellido;
 
-            Console.Write($"Email [{paciente.Correo}]: ");
-            var email = Console.ReadLine()?.Trim();
-            if (!string.IsNullOrEmpty(email))
-                paciente.Correo = email;
+            Console.Write($"correo [{paciente.correo}]: ");
+            var correo = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(correo))
+                paciente.correo = correo;
 
             Console.Write($"DNI [{paciente.Dni}]: ");
             var dni = Console.ReadLine()?.Trim();

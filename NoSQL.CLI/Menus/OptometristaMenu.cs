@@ -15,7 +15,7 @@ namespace NoSQL.CLI.Menus
         private readonly IConsultaService _consultaService;
         private readonly IProductoService _productoService;
         private readonly ICitaService _citaService;
-        private readonly string _userEmail;
+        private readonly string _usercorreo;
         private readonly string _userRole;
 
         public OptometristaMenu(
@@ -24,7 +24,7 @@ namespace NoSQL.CLI.Menus
             IConsultaService consultaService,
             IProductoService productoService,
             ICitaService citaService,
-            string userEmail,
+            string usercorreo,
             string userRole)
         {
             _optometristaService = optometristaService;
@@ -32,7 +32,7 @@ namespace NoSQL.CLI.Menus
             _consultaService = consultaService;
             _productoService = productoService;
             _citaService = citaService;
-            _userEmail = userEmail;
+            _usercorreo = usercorreo;
             _userRole = userRole;
         }
 
@@ -80,7 +80,7 @@ namespace NoSQL.CLI.Menus
 
         private async Task ShowPatientManagementMenu()
         {
-            var patientMenu = new PatientManagementMenu(_pacienteService, _userEmail, _userRole);
+            var patientMenu = new PatientManagementMenu(_pacienteService, _usercorreo, _userRole);
             await patientMenu.ShowAsync();
         }
 
@@ -90,20 +90,20 @@ namespace NoSQL.CLI.Menus
                 _consultaService,
                 _pacienteService,
                 _optometristaService,
-                _userEmail,
+                _usercorreo,
                 _userRole);
             await consultationMenu.ShowAsync();
         }
 
         private async Task ShowProductSalesMenu()
         {
-            var productMenu = new ProductSalesMenu(_productoService, _pacienteService, _userEmail, _userRole);
+            var productMenu = new ProductSalesMenu(_productoService, _pacienteService, _usercorreo, _userRole);
             await productMenu.ShowAsync();
         }
 
         private async Task ShowAppointmentMenu()
         {
-            var appointmentMenu = new AppointmentMenu(_citaService, _pacienteService, _optometristaService, _userEmail, _userRole);
+            var appointmentMenu = new AppointmentMenu(_citaService, _pacienteService, _optometristaService, _usercorreo, _userRole);
             await appointmentMenu.ShowAsync();
         }
 
@@ -112,16 +112,16 @@ namespace NoSQL.CLI.Menus
             Console.Clear();
             Console.WriteLine("=== Historial Clínico ===\n");
 
-            Console.Write("Correo del paciente: ");
-            var pacienteEmail = Console.ReadLine()?.Trim();
-            if (string.IsNullOrEmpty(pacienteEmail))
+            Console.Write("correo del paciente: ");
+            var pacientecorreo = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(pacientecorreo))
             {
-                Console.WriteLine("\nCorreo de paciente requerido. Presione cualquier tecla para continuar...");
+                Console.WriteLine("\ncorreo de paciente requerido. Presione cualquier tecla para continuar...");
                 Console.ReadKey();
                 return;
             }
 
-            var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.Correo == pacienteEmail);
+            var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.correo == pacientecorreo);
             if (paciente == null)
             {
                 Console.WriteLine("\nPaciente no encontrado. Presione cualquier tecla para continuar...");
@@ -131,7 +131,7 @@ namespace NoSQL.CLI.Menus
 
             Console.WriteLine($"\nHistorial clínico de {paciente.Nombre} {paciente.Apellido}:\n");
 
-            var consultas = (await _consultaService.GetAllAsync()).Where(c => c.PacienteEmail == pacienteEmail).ToList();
+            var consultas = (await _consultaService.GetAllAsync()).Where(c => c.Pacientecorreo == pacientecorreo).ToList();
             if (!consultas.Any())
             {
                 Console.WriteLine("No hay consultas registradas.");
@@ -141,7 +141,7 @@ namespace NoSQL.CLI.Menus
                 foreach (var consulta in consultas.OrderByDescending(c => c.Fecha))
                 {
                     Console.WriteLine($"Fecha: {consulta.Fecha:dd/MM/yyyy HH:mm}");
-                    Console.WriteLine($"Optometrista: {consulta.OptometristaEmail}");
+                    Console.WriteLine($"Optometrista: {consulta.Optometristacorreo}");
                     Console.WriteLine($"Motivo: {consulta.Motivo}");
                     Console.WriteLine($"Diagnóstico: {consulta.Diagnostico}");
                     Console.WriteLine($"Tratamiento: {consulta.Tratamiento}");
@@ -149,7 +149,7 @@ namespace NoSQL.CLI.Menus
                 }
             }
 
-            var citas = (await _citaService.GetAllAsync()).Where(c => c.PacienteEmail == pacienteEmail).ToList();
+            var citas = (await _citaService.GetAllAsync()).Where(c => c.Pacientecorreo == pacientecorreo).ToList();
             if (!citas.Any())
             {
                 Console.WriteLine("\nNo hay citas registradas.");
@@ -167,7 +167,7 @@ namespace NoSQL.CLI.Menus
                 }
             }
 
-            var productos = (await _productoService.GetAllAsync()).Where(p => p.PacienteEmail == pacienteEmail).ToList();
+            var productos = (await _productoService.GetAllAsync()).Where(p => p.Pacientecorreo == pacientecorreo).ToList();
             if (!productos.Any())
             {
                 Console.WriteLine("\nNo hay productos registrados.");

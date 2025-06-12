@@ -9,7 +9,7 @@ namespace NoSQL.Domain.Entities
         public required string Genero { get; set; }
         public required string Direccion { get; set; }
         public required string Telefono { get; set; }
-        public required string Correo { get; set; }
+        public required string correo { get; set; }
         public string? Dni { get; set; }
         public string? Ocupacion { get; set; }
         public string? SeguroMedico { get; set; }

@@ -23,9 +23,9 @@ namespace NoSQL.Application.Services
             return await _usuarioRepository.GetByIdAsync(id);
         }
 
-        public async Task<Usuario?> GetByEmailAsync(string correo)
+        public async Task<Usuario?> GetBycorreoAsync(string correo)
         {
-            return await _usuarioRepository.GetByEmailAsync(correo);
+            return await _usuarioRepository.GetBycorreoAsync(correo);
         }
 
         public async Task<(bool Success, string Message)> CreateAsync(Usuario usuario)

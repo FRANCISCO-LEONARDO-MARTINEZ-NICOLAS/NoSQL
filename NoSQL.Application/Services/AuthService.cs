@@ -25,9 +25,9 @@ namespace NoSQL.Application.Services
             _notificacionService = notificacionService;
         }
 
-        public async Task<(bool Success, string Message, Usuario? User, string? Token)> LoginAsync(string email, string password, string rol)
+        public async Task<(bool Success, string Message, Usuario? User, string? Token)> LoginAsync(string correo, string password, string rol)
         {
-            var usuario = await _usuarioRepository.GetByEmailAsync(email);
+            var usuario = await _usuarioRepository.GetBycorreoAsync(correo);
             if (usuario == null)
             {
                 return (false, "Usuario no encontrado.", null, null);
@@ -49,24 +49,24 @@ namespace NoSQL.Application.Services
 
         public async Task<(bool Success, string Message)> RegisterAsync(Usuario usuario, string password)
         {
-            var existingUser = await _usuarioRepository.GetByEmailAsync(usuario.Correo);
+            var existingUser = await _usuarioRepository.GetBycorreoAsync(usuario.Correo);
             if (existingUser != null)
             {
-                return (false, "El email ya está registrado.");
+                return (false, "El correo ya está registrado.");
             }
 
             usuario.PasswordHash = HashPassword(password);
             await _usuarioRepository.AddAsync(usuario);
 
             // Enviar correo de bienvenida
-            await _notificacionService.EnviarCorreoBienvenidaAsync(usuario.Correo, usuario.Nombre);
+            await _notificacionService.EnviarcorreoBienvenidaAsync(usuario.Correo, usuario.Nombre);
 
             return (true, "Usuario registrado exitosamente.");
         }
 
-        public async Task<(bool Success, string Message)> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+        public async Task<(bool Success, string Message)> ChangePasswordAsync(string correo, string currentPassword, string newPassword)
         {
-            var usuario = await _usuarioRepository.GetByEmailAsync(email);
+            var usuario = await _usuarioRepository.GetBycorreoAsync(correo);
             if (usuario == null)
             {
                 return (false, "Usuario no encontrado.");
@@ -81,14 +81,14 @@ namespace NoSQL.Application.Services
             await _usuarioRepository.UpdateAsync(usuario.Id, usuario);
 
             // Enviar correo de confirmación
-            await _notificacionService.EnviarCorreoCambioPasswordAsync(usuario.Correo, usuario.Nombre);
+            await _notificacionService.EnviarcorreoCambioPasswordAsync(usuario.Correo, usuario.Nombre);
 
             return (true, "Contraseña cambiada exitosamente.");
         }
 
-        public async Task<(bool Success, string Message)> ResetPasswordAsync(string email)
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(string correo)
         {
-            var usuario = await _usuarioRepository.GetByEmailAsync(email);
+            var usuario = await _usuarioRepository.GetBycorreoAsync(correo);
             if (usuario == null)
             {
                 return (false, "Usuario no encontrado.");
@@ -99,12 +99,12 @@ namespace NoSQL.Application.Services
             await _usuarioRepository.UpdateAsync(usuario.Id, usuario);
 
             // Enviar correo con nueva contraseña
-            await _notificacionService.EnviarCorreoResetPasswordAsync(usuario.Correo, usuario.Nombre, newPassword);
+            await _notificacionService.EnviarcorreoResetPasswordAsync(usuario.Correo, usuario.Nombre, newPassword);
 
             return (true, "Se ha enviado una nueva contraseña a tu correo electrónico.");
         }
 
-        public async Task<(bool Success, string Message)> ValidateTokenAsync(string token)
+        public (bool Success, string Message) ValidateTokenAsync(string token)
         {
             try
             {

@@ -11,20 +11,20 @@ namespace NoSQL.CLI.Menus
         private readonly ICitaService _citaService;
         private readonly IPacienteService _pacienteService;
         private readonly IOptometristaService _optometristaService;
-        private readonly string _userEmail;
+        private readonly string _usercorreo;
         private readonly string _userRole;
 
         public AppointmentMenu(
             ICitaService citaService,
             IPacienteService pacienteService,
             IOptometristaService optometristaService,
-            string userEmail,
+            string usercorreo,
             string userRole)
         {
             _citaService = citaService;
             _pacienteService = pacienteService;
             _optometristaService = optometristaService;
-            _userEmail = userEmail;
+            _usercorreo = usercorreo;
             _userRole = userRole;
         }
 
@@ -78,9 +78,9 @@ namespace NoSQL.CLI.Menus
             var citas = await _citaService.GetAllAsync();
 
             if (_userRole == "Paciente")
-                citas = citas.Where(c => c.PacienteEmail == _userEmail).ToList();
+                citas = citas.Where(c => c.Pacientecorreo == _usercorreo).ToList();
             else if (_userRole == "Optometrista")
-                citas = citas.Where(c => c.OptometristaEmail == _userEmail).ToList();
+                citas = citas.Where(c => c.Optometristacorreo == _usercorreo).ToList();
 
             if (!citas.Any())
             {
@@ -91,8 +91,8 @@ namespace NoSQL.CLI.Menus
                 foreach (var cita in citas)
                 {
                     Console.WriteLine($"ID: {cita.Id}");
-                    Console.WriteLine($"Paciente: {cita.PacienteEmail}");
-                    Console.WriteLine($"Optometrista: {cita.OptometristaEmail}");
+                    Console.WriteLine($"Paciente: {cita.Pacientecorreo}");
+                    Console.WriteLine($"Optometrista: {cita.Optometristacorreo}");
                     Console.WriteLine($"Fecha: {cita.FechaHora}");
                     Console.WriteLine($"Tipo: {cita.Tipo}");
                     Console.WriteLine($"Motivo: {cita.Motivo}");
@@ -130,8 +130,8 @@ namespace NoSQL.CLI.Menus
                 foreach (var cita in filtradas)
                 {
                     Console.WriteLine($"ID: {cita.Id}");
-                    Console.WriteLine($"Paciente: {cita.PacienteEmail}");
-                    Console.WriteLine($"Optometrista: {cita.OptometristaEmail}");
+                    Console.WriteLine($"Paciente: {cita.Pacientecorreo}");
+                    Console.WriteLine($"Optometrista: {cita.Optometristacorreo}");
                     Console.WriteLine($"Fecha: {cita.FechaHora}");
                     Console.WriteLine($"Tipo: {cita.Tipo}");
                     Console.WriteLine($"Motivo: {cita.Motivo}");
@@ -183,8 +183,8 @@ namespace NoSQL.CLI.Menus
                 foreach (var cita in filtradas)
                 {
                     Console.WriteLine($"ID: {cita.Id}");
-                    Console.WriteLine($"Paciente: {cita.PacienteEmail}");
-                    Console.WriteLine($"Optometrista: {cita.OptometristaEmail}");
+                    Console.WriteLine($"Paciente: {cita.Pacientecorreo}");
+                    Console.WriteLine($"Optometrista: {cita.Optometristacorreo}");
                     Console.WriteLine($"Fecha: {cita.FechaHora}");
                     Console.WriteLine($"Tipo: {cita.Tipo}");
                     Console.WriteLine($"Motivo: {cita.Motivo}");
@@ -203,12 +203,12 @@ namespace NoSQL.CLI.Menus
             Console.WriteLine("=== Agendar Nueva Cita ===\n");
 
             // Obtener datos de paciente
-            string pacienteEmail;
+            string pacientecorreo;
             string pacienteId;
             if (_userRole == "Paciente")
             {
-                pacienteEmail = _userEmail;
-                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.Correo == pacienteEmail);
+                pacientecorreo = _usercorreo;
+                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.correo == pacientecorreo);
                 if (paciente == null)
                 {
                     Console.WriteLine("\nPaciente no encontrado. Presione cualquier tecla para continuar...");
@@ -219,9 +219,9 @@ namespace NoSQL.CLI.Menus
             }
             else
             {
-                Console.Write("Email del paciente: ");
-                pacienteEmail = Console.ReadLine()?.Trim() ?? "";
-                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.Correo == pacienteEmail);
+                Console.Write("correo del paciente: ");
+                pacientecorreo = Console.ReadLine()?.Trim() ?? "";
+                var paciente = (await _pacienteService.GetAllAsync()).FirstOrDefault(p => p.correo == pacientecorreo);
                 if (paciente == null)
                 {
                     Console.WriteLine("\nPaciente no encontrado. Presione cualquier tecla para continuar...");
@@ -232,12 +232,12 @@ namespace NoSQL.CLI.Menus
             }
 
             // Obtener datos de optometrista
-            string optometristaEmail;
+            string optometristacorreo;
             string optometristaId;
             if (_userRole == "Optometrista")
             {
-                optometristaEmail = _userEmail;
-                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.Correo == optometristaEmail);
+                optometristacorreo = _usercorreo;
+                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.correo == optometristacorreo);
                 if (optometrista == null)
                 {
                     Console.WriteLine("\nOptometrista no encontrado. Presione cualquier tecla para continuar...");
@@ -248,9 +248,9 @@ namespace NoSQL.CLI.Menus
             }
             else
             {
-                Console.Write("Email del optometrista: ");
-                optometristaEmail = Console.ReadLine()?.Trim() ?? "";
-                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.Correo == optometristaEmail);
+                Console.Write("correo del optometrista: ");
+                optometristacorreo = Console.ReadLine()?.Trim() ?? "";
+                var optometrista = (await _optometristaService.GetAllAsync()).FirstOrDefault(o => o.correo == optometristacorreo);
                 if (optometrista == null)
                 {
                     Console.WriteLine("\nOptometrista no encontrado. Presione cualquier tecla para continuar...");
@@ -316,8 +316,8 @@ namespace NoSQL.CLI.Menus
                 Id = Guid.NewGuid().ToString(),
                 PacienteId = pacienteId,
                 OptometristaId = optometristaId,
-                PacienteEmail = pacienteEmail,
-                OptometristaEmail = optometristaEmail,
+                Pacientecorreo = pacientecorreo,
+                Optometristacorreo = optometristacorreo,
                 FechaHora = fechaHora,
                 Tipo = tipo,
                 Motivo = motivo,
@@ -338,9 +338,9 @@ namespace NoSQL.CLI.Menus
             // Mostrar citas disponibles
             var citas = await _citaService.GetAllAsync();
             if (_userRole == "Paciente")
-                citas = citas.Where(c => c.PacienteEmail == _userEmail).ToList();
+                citas = citas.Where(c => c.Pacientecorreo == _usercorreo).ToList();
             else if (_userRole == "Optometrista")
-                citas = citas.Where(c => c.OptometristaEmail == _userEmail).ToList();
+                citas = citas.Where(c => c.Optometristacorreo == _usercorreo).ToList();
 
             if (!citas.Any())
             {
@@ -353,8 +353,8 @@ namespace NoSQL.CLI.Menus
             foreach (var cita in citas)
             {
                 Console.WriteLine($"ID: {cita.Id}");
-                Console.WriteLine($"Paciente: {cita.PacienteEmail}");
-                Console.WriteLine($"Optometrista: {cita.OptometristaEmail}");
+                Console.WriteLine($"Paciente: {cita.Pacientecorreo}");
+                Console.WriteLine($"Optometrista: {cita.Optometristacorreo}");
                 Console.WriteLine($"Fecha: {cita.FechaHora}");
                 Console.WriteLine($"Tipo: {cita.Tipo}");
                 Console.WriteLine($"Estado actual: {cita.Estado}");

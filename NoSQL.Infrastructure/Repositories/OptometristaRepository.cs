@@ -38,9 +38,9 @@ namespace NoSQL.Infrastructure.Repositories
             }
         }
 
-        public async Task<Optometrista?> GetByEmailAsync(string correo)
+        public async Task<Optometrista?> GetBycorreoAsync(string correo)
         {
-            var query = "SELECT o.* FROM `optometristas` o WHERE o.Correo = $correo LIMIT 1";
+            var query = "SELECT o.* FROM `optometristas` o WHERE o.correo = $correo LIMIT 1";
             var options = new QueryOptions().Parameter("correo", correo);
             var result = await _cluster.QueryAsync<Optometrista>(query, options);
             return await result.Rows.FirstOrDefaultAsync();

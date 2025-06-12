@@ -23,9 +23,9 @@ namespace NoSQL.Application.Services
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<Paciente?> GetByEmailAsync(string correo)
+        public async Task<Paciente?> GetBycorreoAsync(string correo)
         {
-            return await _repository.GetByEmailAsync(correo);
+            return await _repository.GetBycorreoAsync(correo);
         }
 
         public async Task<Paciente?> GetByDniAsync(string dni)

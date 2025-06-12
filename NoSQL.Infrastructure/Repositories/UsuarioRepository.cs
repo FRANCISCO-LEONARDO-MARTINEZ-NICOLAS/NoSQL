@@ -39,7 +39,7 @@ namespace NoSQL.Infrastructure.Repositories
             }
         }
 
-        public async Task<Usuario?> GetByEmailAsync(string correo)
+        public async Task<Usuario?> GetBycorreoAsync(string correo)
         {
             var query = $"SELECT u.* FROM `{_context.BucketName}` u WHERE u.type = 'usuario' AND u.correo = $correo LIMIT 1";
             var options = QueryOptions.Create().Parameter("correo", correo);
@@ -69,9 +69,9 @@ namespace NoSQL.Infrastructure.Repositories
                 .RemoveAsync(id);
         }
 
-        public async Task<bool> ExistsByEmailAsync(string correo)
+        public async Task<bool> ExistsBycorreoAsync(string correo)
         {
-            var usuario = await GetByEmailAsync(correo);
+            var usuario = await GetBycorreoAsync(correo);
             return usuario != null;
         }
 

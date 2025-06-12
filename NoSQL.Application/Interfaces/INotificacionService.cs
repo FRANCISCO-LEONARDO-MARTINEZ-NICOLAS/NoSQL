@@ -19,8 +19,8 @@ namespace NoSQL.Application.Interfaces
         Task<(bool Success, string Message)> CrearNotificacionProductoListoAsync(string pacienteId, string nombreProducto);
 
         // Métodos de notificación por correo
-        Task<(bool Success, string Message)> EnviarCorreoBienvenidaAsync(string email, string nombre);
-        Task<(bool Success, string Message)> EnviarCorreoCambioPasswordAsync(string email, string nombre);
-        Task<(bool Success, string Message)> EnviarCorreoResetPasswordAsync(string email, string nombre, string nuevaPassword);
+        Task<(bool Success, string Message)> EnviarcorreoBienvenidaAsync(string correo, string nombre);
+        Task<(bool Success, string Message)> EnviarcorreoCambioPasswordAsync(string correo, string nombre);
+        Task<(bool Success, string Message)> EnviarcorreoResetPasswordAsync(string correo, string nombre, string nuevaPassword);
     }
 } 

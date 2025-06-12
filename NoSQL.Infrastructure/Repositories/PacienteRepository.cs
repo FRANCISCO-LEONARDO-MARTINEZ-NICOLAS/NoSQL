@@ -20,7 +20,7 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<IEnumerable<Paciente>> GetAllAsync()
         {
-            var query = "SELECT p.* FROM `pacientes` p";
+            var query = "SELECT p.* FROM `OpticaNoSQL` p WHERE p.type = 'paciente'";
             var result = await _cluster.QueryAsync<Paciente>(query);
             return await result.Rows.ToListAsync();
         }
@@ -38,10 +38,9 @@ namespace NoSQL.Infrastructure.Repositories
             }
         }
 
-        public async Task<Paciente?> GetByEmailAsync(string correo)
+        public async Task<Paciente?> GetBycorreoAsync(string correo)
         {
-            // Usa el nombre real del bucket, por ejemplo "OpticaNoSQL"
-            var query = $"SELECT p.* FROM `OpticaNoSQL` p WHERE p.type = 'paciente' AND p.correo = $correo LIMIT 1";
+            var query = "SELECT p.* FROM `OpticaNoSQL` p WHERE p.type = 'paciente' AND p.correo = $correo LIMIT 1";
             var options = new QueryOptions().Parameter("correo", correo);
             var result = await _cluster.QueryAsync<Paciente>(query, options);
             return await result.Rows.FirstOrDefaultAsync();
@@ -49,7 +48,7 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<Paciente?> GetByDniAsync(string dni)
         {
-            var query = "SELECT p.* FROM `pacientes` p WHERE p.Dni = $dni LIMIT 1";
+            var query = "SELECT p.* FROM `OpticaNoSQL` p WHERE p.type = 'paciente' AND p.dni = $dni LIMIT 1";
             var options = new QueryOptions().Parameter("dni", dni);
             var result = await _cluster.QueryAsync<Paciente>(query, options);
             return await result.Rows.FirstOrDefaultAsync();
@@ -57,12 +56,46 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task AddAsync(Paciente paciente)
         {
-            await _collection.InsertAsync(paciente.Id, paciente);
+            var pacienteWithType = new
+            {
+                paciente.Id,
+                paciente.Nombre,
+                paciente.Apellido,
+                paciente.FechaNacimiento,
+                paciente.Genero,
+                paciente.Direccion,
+                paciente.Telefono,
+                paciente.correo,
+                paciente.Dni,
+                paciente.Ocupacion,
+                paciente.SeguroMedico,
+                paciente.HistorialClinico,
+                type = "paciente"
+            };
+            
+            await _collection.InsertAsync(paciente.Id, pacienteWithType);
         }
 
         public async Task UpdateAsync(string id, Paciente paciente)
         {
-            await _collection.ReplaceAsync(id, paciente);
+            var pacienteWithType = new
+            {
+                paciente.Id,
+                paciente.Nombre,
+                paciente.Apellido,
+                paciente.FechaNacimiento,
+                paciente.Genero,
+                paciente.Direccion,
+                paciente.Telefono,
+                paciente.correo,
+                paciente.Dni,
+                paciente.Ocupacion,
+                paciente.SeguroMedico,
+                paciente.HistorialClinico,
+                type = "paciente"
+            };
+            
+            await _collection.ReplaceAsync(id, pacienteWithType);
         }
 
         public async Task DeleteAsync(string id)

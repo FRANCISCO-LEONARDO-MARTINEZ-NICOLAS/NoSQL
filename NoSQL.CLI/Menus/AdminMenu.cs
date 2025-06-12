@@ -35,7 +35,7 @@ namespace NoSQL.CLI.Menus
                         await MostrarTodosLosUsuariosAsync();
                         break;
                     case "2":
-                        await BuscarUsuarioPorCorreoAsync();
+                        await BuscarUsuarioPorcorreoAsync();
                         break;
                     case "3":
                         await RegistrarUsuarioAsync();
@@ -72,7 +72,7 @@ namespace NoSQL.CLI.Menus
                 {
                     Console.WriteLine($"ID: {usuario.Id}");
                     Console.WriteLine($"Nombre: {usuario.Nombre}");
-                    Console.WriteLine($"Correo: {usuario.Correo}");
+                    Console.WriteLine($"correo: {usuario.correo}");
                     Console.WriteLine($"Rol: {usuario.Rol}");
                     Console.WriteLine($"Estado: {(usuario.Activo ? "Activo" : "Inactivo")}");
                     Console.WriteLine($"Fecha de creación: {usuario.FechaCreacion:dd/MM/yyyy HH:mm}");
@@ -85,21 +85,21 @@ namespace NoSQL.CLI.Menus
             Console.ReadKey();
         }
 
-        private async Task BuscarUsuarioPorCorreoAsync()
+        private async Task BuscarUsuarioPorcorreoAsync()
         {
             Console.Clear();
-            Console.WriteLine("=== Buscar Usuario por Correo ===\n");
+            Console.WriteLine("=== Buscar Usuario por correo ===\n");
 
-            Console.Write("Correo del usuario: ");
+            Console.Write("correo del usuario: ");
             var correo = Console.ReadLine()?.Trim();
             if (string.IsNullOrEmpty(correo))
             {
-                Console.WriteLine("\nCorreo requerido. Presione cualquier tecla para continuar...");
+                Console.WriteLine("\ncorreo requerido. Presione cualquier tecla para continuar...");
                 Console.ReadKey();
                 return;
             }
 
-            var usuario = await _usuarioService.GetByEmailAsync(correo);
+            var usuario = await _usuarioService.GetBycorreoAsync(correo);
             if (usuario == null)
             {
                 Console.WriteLine("\nUsuario no encontrado. Presione cualquier tecla para continuar...");
@@ -110,7 +110,7 @@ namespace NoSQL.CLI.Menus
             Console.WriteLine("\nDatos del usuario:");
             Console.WriteLine($"ID: {usuario.Id}");
             Console.WriteLine($"Nombre: {usuario.Nombre}");
-            Console.WriteLine($"Correo: {usuario.Correo}");
+            Console.WriteLine($"correo: {usuario.correo}");
             Console.WriteLine($"Rol: {usuario.Rol}");
             Console.WriteLine($"Estado: {(usuario.Activo ? "Activo" : "Inactivo")}");
             Console.WriteLine($"Fecha de creación: {usuario.FechaCreacion:dd/MM/yyyy HH:mm}");
@@ -134,11 +134,11 @@ namespace NoSQL.CLI.Menus
                 return;
             }
 
-            Console.Write("Correo: ");
+            Console.Write("correo: ");
             var correo = Console.ReadLine()?.Trim();
             if (string.IsNullOrEmpty(correo))
             {
-                Console.WriteLine("\nCorreo requerido. Presione cualquier tecla para continuar...");
+                Console.WriteLine("\ncorreo requerido. Presione cualquier tecla para continuar...");
                 Console.ReadKey();
                 return;
             }
@@ -175,7 +175,7 @@ namespace NoSQL.CLI.Menus
             {
                 Id = Guid.NewGuid().ToString(),
                 Nombre = nombre,
-                Correo = correo,
+                correo = correo,
                 Rol = rol,
                 Activo = true,
                 FechaCreacion = DateTime.UtcNow,
@@ -186,7 +186,7 @@ namespace NoSQL.CLI.Menus
 
             await _usuarioService.CreateAsync(usuario);
             // Si tienes notificación, descomenta la siguiente línea:
-            // await _notificacionService.EnviarCorreoBienvenidaAsync(usuario.Correo, usuario.Nombre);
+            // await _notificacionService.EnviarcorreoBienvenidaAsync(usuario.correo, usuario.Nombre);
             Console.WriteLine("\nUsuario registrado exitosamente. Presione cualquier tecla para continuar...");
             Console.ReadKey();
         }
@@ -220,10 +220,10 @@ namespace NoSQL.CLI.Menus
             if (!string.IsNullOrEmpty(nombre))
                 usuario.Nombre = nombre;
 
-            Console.Write($"Correo [{usuario.Correo}]: ");
+            Console.Write($"correo [{usuario.correo}]: ");
             var correo = Console.ReadLine()?.Trim();
             if (!string.IsNullOrEmpty(correo))
-                usuario.Correo = correo;
+                usuario.correo = correo;
 
             Console.WriteLine($"\nRol actual: {usuario.Rol}");
             Console.WriteLine("Nuevo rol:");

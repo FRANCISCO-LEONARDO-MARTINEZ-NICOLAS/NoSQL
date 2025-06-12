@@ -9,6 +9,6 @@ namespace NoSQL.Domain.Interfaces
         Task AddAsync(Optometrista optometrista);
         Task UpdateAsync(string id, Optometrista optometrista);
         Task DeleteAsync(string id);
-        Task<Optometrista?> GetByEmailAsync(string correo);
+        Task<Optometrista?> GetBycorreoAsync(string correo);
     }
 }

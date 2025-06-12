@@ -6,8 +6,8 @@ namespace NoSQL.Domain.Interfaces
     {
         Task<IEnumerable<Consulta>> GetAllAsync();
         Task<Consulta?> GetByIdAsync(string id);
-        Task<IEnumerable<Consulta>> GetByPacienteEmailAsync(string email);
-        Task<IEnumerable<Consulta>> GetByOptometristaEmailAsync(string email);
+        Task<IEnumerable<Consulta>> GetByPacientecorreoAsync(string correo);
+        Task<IEnumerable<Consulta>> GetByOptometristacorreoAsync(string correo);
         Task<IEnumerable<Consulta>> GetByPacienteIdAsync(string id);
         Task<IEnumerable<Consulta>> GetByOptometristaIdAsync(string id);
         Task AddAsync(Consulta consulta);
