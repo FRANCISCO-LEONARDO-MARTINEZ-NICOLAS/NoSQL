@@ -12,6 +12,7 @@ import { InventoryPage } from './pages/InventoryPage';
 import { OptometristsPage } from './pages/OptometristsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { AdminSystemPage } from './pages/AdminSystemPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -89,6 +90,11 @@ function AppRoutes() {
           <Route path="/reports" element={
             <ProtectedRoute>
               <ReportsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/system" element={
+            <ProtectedRoute>
+              <AdminSystemPage />
             </ProtectedRoute>
           } />
         </>

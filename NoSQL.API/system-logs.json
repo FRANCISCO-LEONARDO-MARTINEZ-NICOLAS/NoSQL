@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "52b923ab-14e9-4978-b71c-cfbc12802b63",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:19:40.1422199Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "f7b3234c-3667-4d66-8ebb-8674f8585c2b",
+    "UserEmail": "leonarodo000426@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leonarodo000426@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:19:53.2672288Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "ba878bbf-2d75-4898-aa83-f11b76176faf",
+    "UserEmail": "leonarodo000426@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leonarodo000426@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:22:05.1784917Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "28e2d1f7-f8ec-48f7-8108-670ec25dce06",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:30:29.4995468Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "0d1ad2a1-127c-4419-8c99-2abc07203de9",
+    "UserEmail": "leonardomtz000426@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leonardomtz000426@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:32:31.5815192Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "5051d129-0c6d-4fb6-b54a-2f1034482190",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:41:49.4148774Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "02aa790a-c182-488f-a33e-809d7134c05d",
+    "UserEmail": "leonardomtz000426@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leonardomtz000426@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:42:07.7955975Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "a9141976-d081-443f-992d-6a9a8911a3ba",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T05:43:37.1994063Z",
+    "Module": "Authentication",
+    "Success": true
+  }
+]

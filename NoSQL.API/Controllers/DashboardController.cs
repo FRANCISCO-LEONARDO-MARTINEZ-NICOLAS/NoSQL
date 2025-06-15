@@ -54,7 +54,7 @@ namespace NoSQL.API.Controllers
 
                 return Ok(metrics);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Retornar métricas por defecto en caso de error
                 var defaultMetrics = new

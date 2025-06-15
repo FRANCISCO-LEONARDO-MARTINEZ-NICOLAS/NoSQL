@@ -15,28 +15,62 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export function DashboardPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const isAdmin = user?.rol === 'admin' || user?.rol === 'Administrador';
+
+  // Debug logging
+  console.log('DashboardPage render:', { user, authLoading, loading, error });
+
+  // Show test component for debugging
+  const TestComponent = () => (
+    <div className="p-8 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-4">🎯 Dashboard Test Component</h2>
+      <div className="space-y-2 text-sm">
+        <p><strong>User:</strong> {JSON.stringify(user)}</p>
+        <p><strong>Auth Loading:</strong> {authLoading ? 'Yes' : 'No'}</p>
+        <p><strong>Loading:</strong> {loading ? 'Yes' : 'No'}</p>
+        <p><strong>Error:</strong> {error || 'None'}</p>
+        <p><strong>Is Admin:</strong> {isAdmin ? 'Yes' : 'No'}</p>
+      </div>
+      <button 
+        onClick={() => window.location.reload()} 
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Reload Page
+      </button>
+    </div>
+  );
+
+  // Temporarily show test component to diagnose
+  // return <TestComponent />;
 
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
+        console.log('Loading dashboard data...');
         setLoading(true);
+        setError(null);
+        
         const [metricsData, appointmentsData, salesData] = await Promise.all([
           dashboardService.getMetrics(),
           dashboardService.getTodayAppointments(),
           dashboardService.getRecentSales()
         ]);
         
+        console.log('Dashboard data loaded:', { metricsData, appointmentsData, salesData });
+        
         setMetrics(metricsData);
         setAppointments(appointmentsData);
         setSales(salesData);
       } catch (error) {
         console.error('Error loading dashboard data:', error);
+        setError('Error al cargar los datos del dashboard');
+        
         // Si hay error, usar datos mock como fallback
         setAppointments([
           {
@@ -87,8 +121,56 @@ export function DashboardPage() {
       }
     };
 
-    loadDashboardData();
-  }, []);
+    if (!authLoading) {
+      loadDashboardData();
+    }
+  }, [authLoading]);
+
+  // Show loading state while auth is loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-neutral-600">Verificando autenticación...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button variant="primary" onClick={() => window.location.reload()}>
+              Reintentar
+            </Button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-neutral-600">Cargando datos del dashboard...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Debug: Show user info
+  console.log('Rendering dashboard for user:', user);
 
   const adminMetrics = [
     {
@@ -150,19 +232,6 @@ export function DashboardPage() {
   ];
 
   const currentMetrics = isAdmin ? adminMetrics : optometristMetrics;
-
-  if (loading) {
-    return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-neutral-600">Cargando datos del dashboard...</p>
-          </div>
-        </div>
-      </DashboardLayout>
-    );
-  }
 
   const appointmentsColumns = [
     {

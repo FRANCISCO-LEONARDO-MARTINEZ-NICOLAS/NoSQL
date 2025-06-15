@@ -1,0 +1,47 @@
+{
+  "Roles": [
+    {
+      "Name": "Admin",
+      "Permissions": [
+        "all"
+      ]
+    },
+    {
+      "Name": "Optometrista",
+      "Permissions": [
+        "consultas",
+        "citas",
+        "pacientes"
+      ]
+    }
+  ],
+  "Notifications": {
+    "EmailSettings": {
+      "SmtpServer": "smtp.gmail.com",
+      "SmtpPort": 587,
+      "SenderEmail": "noreply@opticare.com",
+      "SenderName": "OptiCare System",
+      "Username": null,
+      "Password": null,
+      "UseSsl": true
+    },
+    "Templates": [
+      {
+        "Name": "Cita Confirmada",
+        "Subject": "Confirmaci\u00F3n de Cita - OptiCare",
+        "Body": "Su cita ha sido confirmada para el {fecha} a las {hora}."
+      },
+      {
+        "Name": "Recordatorio de Cita",
+        "Subject": "Recordatorio de Cita - OptiCare",
+        "Body": "Le recordamos su cita programada para ma\u00F1ana a las {hora}."
+      }
+    ]
+  },
+  "Backup": {
+    "AutoBackup": true,
+    "BackupFrequency": "daily",
+    "RetentionDays": 30,
+    "BackupPath": "./backups"
+  }
+}

@@ -34,12 +34,12 @@ export const dashboardService = {
   },
 
   async getTodayAppointments(): Promise<Appointment[]> {
-    const response = await api.get<Appointment[]>('/api/citas/today');
+    const response = await api.get<Appointment[]>('/api/dashboard/appointments/today');
     return response.data;
   },
 
   async getRecentSales(): Promise<Sale[]> {
-    const response = await api.get<Sale[]>('/api/ventas/recent');
+    const response = await api.get<Sale[]>('/api/dashboard/sales/recent');
     return response.data;
   }
 }; 

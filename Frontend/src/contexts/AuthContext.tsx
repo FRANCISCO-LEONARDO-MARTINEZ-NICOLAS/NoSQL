@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService, LoginRequest, RegisterRequest } from '../services/authService';
 import { User } from '../types';
+import { systemMonitoringService } from '../services/systemMonitoringService';
 
 interface AuthContextType {
   user: User | null;
@@ -38,6 +39,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
+  const logActivity = async (
+    action: string,
+    details: string,
+    userEmail: string,
+    userRole: any,
+    success: boolean = true
+  ) => {
+    try {
+      await systemMonitoringService.logActivity({
+        userEmail,
+        userRole,
+        action,
+        details,
+        module: 'Authentication',
+        success,
+        ipAddress: '127.0.0.1'
+      });
+    } catch (error) {
+      console.error('Error logging activity:', error);
+      // No lanzamos error para no interrumpir el flujo principal
+    }
+  };
+
   const login = async (credentials: LoginRequest) => {
     try {
       const response = await authService.login(credentials);
@@ -53,8 +77,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       localStorage.setItem('user', JSON.stringify(transformedUser));
       setUser(transformedUser);
+
+      // Log successful login
+      await logActivity(
+        'Login',
+        'Inicio de sesión exitoso',
+        transformedUser.correo,
+        transformedUser.rol,
+        true
+      );
     } catch (error) {
       console.error('Error during login:', error);
+      
+      // Log failed login attempt
+      await logActivity(
+        'Login',
+        `Intento de inicio de sesión fallido para ${credentials.correo}`,
+        credentials.correo,
+        'unknown' as any,
+        false
+      );
+      
       throw error;
     }
   };
@@ -74,13 +117,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       localStorage.setItem('user', JSON.stringify(transformedUser));
       setUser(transformedUser);
+
+      // Log successful registration
+      await logActivity(
+        'Register',
+        'Registro de usuario exitoso',
+        transformedUser.correo,
+        transformedUser.rol,
+        true
+      );
     } catch (error) {
       console.error('Error during registration:', error);
+      
+      // Log failed registration
+      await logActivity(
+        'Register',
+        `Intento de registro fallido para ${userData.correo}`,
+        userData.correo,
+        'unknown' as any,
+        false
+      );
+      
       throw error;
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (user) {
+      // Log logout before clearing user data
+      await logActivity(
+        'Logout',
+        'Cierre de sesión',
+        user.correo,
+        user.rol,
+        true
+      );
+    }
+    
     authService.logout();
     setUser(null);
   };

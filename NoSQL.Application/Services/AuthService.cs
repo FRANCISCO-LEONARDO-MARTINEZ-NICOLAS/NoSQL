@@ -12,22 +12,45 @@ namespace NoSQL.Application.Services
     public class AuthService : IAuthService
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IOptometristaRepository _optometristaRepository;
         private readonly IConfiguration _configuration;
         private readonly INotificacionService _notificacionService;
 
         public AuthService(
             IUsuarioRepository usuarioRepository,
+            IOptometristaRepository optometristaRepository,
             IConfiguration configuration,
             INotificacionService notificacionService)
         {
             _usuarioRepository = usuarioRepository;
+            _optometristaRepository = optometristaRepository;
             _configuration = configuration;
             _notificacionService = notificacionService;
         }
 
         public async Task<(bool Success, string Message, Usuario? User, string? Token)> LoginAsync(string correo, string password, string rol)
         {
+            // Buscar primero en usuarios normales
             var usuario = await _usuarioRepository.GetBycorreoAsync(correo);
+            
+            // Si no se encuentra y el rol es Optometrista, buscar en optometristas
+            if (usuario == null && rol.ToLower() == "optometrista")
+            {
+                var optometrista = await _optometristaRepository.GetBycorreoAsync(correo);
+                if (optometrista != null)
+                {
+                    // Convertir Optometrista a Usuario para el login
+                    usuario = new Usuario
+                    {
+                        Id = optometrista.Id,
+                        Nombre = $"{optometrista.Nombre} {optometrista.Apellido}",
+                        Correo = optometrista.Correo,
+                        Rol = "Optometrista",
+                        PasswordHash = optometrista.PasswordHash
+                    };
+                }
+            }
+
             if (usuario == null)
             {
                 return (false, "Usuario no encontrado.", null, null);

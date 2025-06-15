@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, Users, Calendar, FileText, Package, 
   BarChart3, Settings, Stethoscope, ShoppingCart,
-  UserCheck, Eye
+  UserCheck, Eye, Server
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { GlassCard } from '../ui/GlassCard';
@@ -26,6 +26,7 @@ const menuItems: MenuItem[] = [
   { id: 'inventory', label: 'Inventario', icon: Package, role: 'both', path: '/inventory' },
   { id: 'optometrists', label: 'Optometristas', icon: UserCheck, role: 'admin', path: '/optometrists' },
   { id: 'reports', label: 'Reportes', icon: BarChart3, role: 'admin', path: '/reports' },
+  { id: 'admin-system', label: 'Administración', icon: Server, role: 'admin', path: '/admin/system' },
   { id: 'settings', label: 'Configuración', icon: Settings, role: 'both', path: '/settings' },
 ];
 

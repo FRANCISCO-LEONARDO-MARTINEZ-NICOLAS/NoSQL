@@ -17,5 +17,10 @@ namespace NoSQL.Domain.Entities
         public DateTime FechaContratacion { get; set; } = DateTime.UtcNow;
         public bool Activo { get; set; } = true;
         public string type { get; set; } = "Optometrista";
+        
+        // Credenciales para login
+        public string? Username { get; set; }
+        public string? PasswordHash { get; set; }
+        public bool HasLoginCredentials { get; set; } = false;
     }
 }

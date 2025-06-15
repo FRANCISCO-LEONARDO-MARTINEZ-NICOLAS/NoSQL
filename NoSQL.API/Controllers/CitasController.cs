@@ -43,7 +43,7 @@ namespace NoSQL.API.Controllers
 
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Retornar lista vacía en caso de error
                 return Ok(new List<object>());
