@@ -262,5 +262,27 @@
     "Timestamp": "2025-06-16T02:48:45.0719891Z",
     "Module": "Authentication",
     "Success": true
+  },
+  {
+    "Id": "ed7aceaa-1e25-4ab7-bea8-7ee1ff805233",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T03:17:00.3447353Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "36def0e5-039d-4df0-8db4-684807587642",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T03:17:10.1846746Z",
+    "Module": "Authentication",
+    "Success": true
   }
 ]
