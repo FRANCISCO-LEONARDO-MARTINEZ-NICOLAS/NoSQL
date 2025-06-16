@@ -57,6 +57,7 @@ builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
 builder.Services.AddScoped<IOptometristaRepository, OptometristaRepository>();
 builder.Services.AddScoped<IConsultaRepository, ConsultaRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IProductoInventarioRepository, ProductoInventarioRepository>();
 builder.Services.AddScoped<ICitaRepository, CitaRepository>();
 builder.Services.AddScoped<IVentaRepository, VentaRepository>();
 builder.Services.AddScoped<INotificacionRepository, NotificacionRepository>();
@@ -67,6 +68,7 @@ builder.Services.AddScoped<IPacienteService, PacienteService>();
 builder.Services.AddScoped<IOptometristaService, OptometristaService>();
 builder.Services.AddScoped<IConsultaService, ConsultaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<IProductoInventarioService, ProductoInventarioService>();
 builder.Services.AddScoped<ICitaService, CitaService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -106,7 +108,9 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Optica NoSQL API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "OptiCare API", Version = "v1" });
+    
+    // Configurar JWT en Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -115,7 +119,8 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {
             new OpenApiSecurityScheme
@@ -124,35 +129,36 @@ builder.Services.AddSwaggerGen(c =>
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
-                }
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
             },
-            Array.Empty<string>()
+            new List<string>()
         }
     });
 });
 
 var app = builder.Build();
 
-// Configuracion de  HTTP.
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "OptiCare API v1");
+        c.RoutePrefix = string.Empty; // Hacer que Swagger esté disponible en la raíz
+    });
 }
 
 app.UseHttpsRedirection();
+
 app.UseCors("AllowReactApp");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
-try
-{
-    app.Run();
-}
-catch (Exception ex)
-{
-    var logger = app.Logger;
-    logger.LogError(ex, "Error fatal al iniciar la aplicación");
-    throw;
-}
+app.Run();

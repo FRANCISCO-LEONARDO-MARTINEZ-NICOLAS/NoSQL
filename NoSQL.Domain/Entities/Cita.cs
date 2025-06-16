@@ -12,5 +12,9 @@ namespace NoSQL.Domain.Entities
         public required string Motivo { get; set; }
         public required string Estado { get; set; }
         public string? Observaciones { get; set; }
+        public string? Notas { get; set; }
+        
+        // Campo para identificar el tipo de documento en Couchbase
+        public string type { get; set; } = "cita";
     }
 } 

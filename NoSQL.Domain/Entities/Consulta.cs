@@ -19,6 +19,9 @@ namespace NoSQL.Domain.Entities
         public AgudezaVisual? AgudezaVisual { get; set; }
         public Refraccion? Refraccion { get; set; }
         public DateTime? FechaSeguimiento { get; set; }
+        
+        // Campo para identificar el tipo de documento en Couchbase
+        public string type { get; set; } = "consulta";
     }
 
     public class AgudezaVisual

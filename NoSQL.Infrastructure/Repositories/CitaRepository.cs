@@ -11,16 +11,18 @@ namespace NoSQL.Infrastructure.Repositories
     {
         private readonly ICouchbaseCollection _collection;
         private readonly ICluster _cluster;
+        private readonly string _bucketName;
 
         public CitaRepository(CouchbaseDbContext context)
         {
             _collection = context.Bucket.DefaultCollection();
             _cluster = context.Cluster;
+            _bucketName = context.BucketName;
         }
 
         public async Task<IEnumerable<Cita>> GetAllAsync()
         {
-            var query = "SELECT c.* FROM `citas` c";
+            var query = $"SELECT c.* FROM `{_bucketName}` c WHERE c.type = 'cita'";
             var result = await _cluster.QueryAsync<Cita>(query);
             return await result.Rows.ToListAsync();
         }
@@ -40,7 +42,7 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<IEnumerable<Cita>> GetByPacienteIdAsync(string id)
         {
-            var query = "SELECT c.* FROM `citas` c WHERE c.PacienteId = $id";
+            var query = $"SELECT c.* FROM `{_bucketName}` c WHERE c.type = 'cita' AND c.PacienteId = $id";
             var options = new QueryOptions().Parameter("id", id);
             var result = await _cluster.QueryAsync<Cita>(query, options);
             return await result.Rows.ToListAsync();
@@ -48,7 +50,7 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<IEnumerable<Cita>> GetByOptometristaIdAsync(string id)
         {
-            var query = "SELECT c.* FROM `citas` c WHERE c.OptometristaId = $id";
+            var query = $"SELECT c.* FROM `{_bucketName}` c WHERE c.type = 'cita' AND c.OptometristaId = $id";
             var options = new QueryOptions().Parameter("id", id);
             var result = await _cluster.QueryAsync<Cita>(query, options);
             return await result.Rows.ToListAsync();
@@ -56,7 +58,7 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<IEnumerable<Cita>> GetByPacientecorreoAsync(string correo)
         {
-            var query = "SELECT c.* FROM `citas` c WHERE c.Pacientecorreo = $correo";
+            var query = $"SELECT c.* FROM `{_bucketName}` c WHERE c.type = 'cita' AND c.Pacientecorreo = $correo";
             var options = new QueryOptions().Parameter("correo", correo);
             var result = await _cluster.QueryAsync<Cita>(query, options);
             return await result.Rows.ToListAsync();
@@ -64,7 +66,7 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task<IEnumerable<Cita>> GetByOptometristacorreoAsync(string correo)
         {
-            var query = "SELECT c.* FROM `citas` c WHERE c.Optometristacorreo = $correo";
+            var query = $"SELECT c.* FROM `{_bucketName}` c WHERE c.type = 'cita' AND c.Optometristacorreo = $correo";
             var options = new QueryOptions().Parameter("correo", correo);
             var result = await _cluster.QueryAsync<Cita>(query, options);
             return await result.Rows.ToListAsync();
@@ -72,11 +74,13 @@ namespace NoSQL.Infrastructure.Repositories
 
         public async Task AddAsync(Cita cita)
         {
+            cita.type = "cita";
             await _collection.InsertAsync(cita.Id, cita);
         }
 
         public async Task UpdateAsync(string id, Cita cita)
         {
+            cita.type = "cita";
             await _collection.ReplaceAsync(id, cita);
         }
 

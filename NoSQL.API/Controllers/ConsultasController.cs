@@ -177,6 +177,77 @@ namespace NoSQL.API.Controllers
             return NoContent();
         }
 
+        [HttpGet("test")]
+        public async Task<IActionResult> Test()
+        {
+            try
+            {
+                var consultas = await _consultaService.GetAllAsync();
+                return Ok(new { 
+                    message = "Test endpoint working", 
+                    consultasCount = consultas.Count(),
+                    consultas = consultas.Take(5).ToList() // Mostrar solo las primeras 5
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { 
+                    message = "Error en test endpoint", 
+                    error = ex.Message,
+                    stackTrace = ex.StackTrace
+                });
+            }
+        }
+
+        [HttpPost("test-create")]
+        public async Task<IActionResult> TestCreate()
+        {
+            try
+            {
+                var testConsulta = new Consulta
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    PacienteId = "test-patient",
+                    OptometristaId = "test-optometrist",
+                    Pacientecorreo = "test@patient.com",
+                    Optometristacorreo = "test@optometrist.com",
+                    Fecha = DateTime.UtcNow,
+                    Motivo = "Test consultation",
+                    Sintomas = "Test symptoms",
+                    Diagnostico = "Test diagnosis",
+                    Tratamiento = "Test treatment",
+                    Recomendaciones = "Test recommendations",
+                    Observaciones = "Test observations",
+                    type = "consulta"
+                };
+
+                var (success, message) = await _consultaService.CreateAsync(testConsulta);
+                if (success)
+                {
+                    return Ok(new { 
+                        message = "Test consultation created successfully", 
+                        id = testConsulta.Id,
+                        originalMessage = message
+                    });
+                }
+                else
+                {
+                    return BadRequest(new { 
+                        message = "Failed to create test consultation", 
+                        error = message
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { 
+                    message = "Error creating test consultation", 
+                    error = ex.Message,
+                    stackTrace = ex.StackTrace
+                });
+            }
+        }
+
         private async Task<ConsultaDto> MapConsultaToDto(Consulta consulta)
         {
             var paciente = await _pacienteService.GetByIdAsync(consulta.PacienteId);

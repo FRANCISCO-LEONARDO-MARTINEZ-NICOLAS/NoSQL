@@ -86,5 +86,203 @@
     "Timestamp": "2025-06-15T05:43:37.1994063Z",
     "Module": "Authentication",
     "Success": true
+  },
+  {
+    "Id": "2a647082-625c-4485-b2e4-9e00cb7b55fd",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T19:46:28.3439969Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "be90bb0c-a9d6-440b-93dc-dc488757234a",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T19:46:38.9953665Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "b110d1f9-d1f9-42c0-a514-0924e4ccfcad",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T21:36:23.0210178Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "0f36edb2-cc47-4860-beb0-ba865b706627",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-15T21:36:45.3939034Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "a2f4ebbf-d323-4377-81e8-8afe59bdf3af",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T01:44:34.2619273Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "8c460d1f-f884-4a89-9b6a-ccee72817506",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T01:44:44.5557803Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "bd8ff658-b1ef-4cfb-88ee-1dd93b0e031b",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T01:57:06.7771995Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "712e83d4-295c-4391-b9b7-0f576e70a9f2",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T01:57:23.0759952Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "47761d7c-c76f-4f35-8f22-f08688ed53d1",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:18:06.9183905Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "46d6662e-5cbc-4fc1-b9a0-6972fa4514b5",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:18:15.3893979Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "3e15fb51-0bb9-4750-b078-0799d1e26d80",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:47:33.4233523Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "d9248faf-fa3a-49af-9372-e00c1903422a",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leon@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:47:45.9292573Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "014a36af-9b2f-481f-a5fd-9285c3f5e654",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leon@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:47:50.2525489Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "3279c1c7-9bd1-4a67-a4eb-5bdce18719f1",
+    "UserEmail": "leon000426@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leon000426@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:48:01.3560763Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "7979e148-bea8-43dc-a202-b6f72a84d416",
+    "UserEmail": "leon000426@gmail.com",
+    "UserRole": "unknown",
+    "Action": "Login",
+    "Details": "Intento de inicio de sesi\u00F3n fallido para leon000426@gmail.com",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:48:21.3089881Z",
+    "Module": "Authentication",
+    "Success": false
+  },
+  {
+    "Id": "e3512a28-2a15-4910-be97-555a51b2a3cc",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T02:48:45.0719891Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "ed7aceaa-1e25-4ab7-bea8-7ee1ff805233",
+    "UserEmail": "leon@gmail.com",
+    "UserRole": "Optometrista",
+    "Action": "Logout",
+    "Details": "Cierre de sesi\u00F3n",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T03:17:00.3447353Z",
+    "Module": "Authentication",
+    "Success": true
+  },
+  {
+    "Id": "36def0e5-039d-4df0-8db4-684807587642",
+    "UserEmail": "admin@opticare.com",
+    "UserRole": "admin",
+    "Action": "Login",
+    "Details": "Inicio de sesi\u00F3n exitoso",
+    "IpAddress": "127.0.0.1",
+    "Timestamp": "2025-06-16T03:17:10.1846746Z",
+    "Module": "Authentication",
+    "Success": true
   }
 ]

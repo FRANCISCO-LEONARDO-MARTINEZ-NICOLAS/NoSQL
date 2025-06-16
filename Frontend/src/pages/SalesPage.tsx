@@ -278,7 +278,9 @@ export function SalesPage() {
           icon={Eye}
           onClick={() => handleViewSale(sale)}
           className="p-1 hover:bg-blue-50"
-        />
+        >
+          Ver
+        </Button>
       )
     }
   ];

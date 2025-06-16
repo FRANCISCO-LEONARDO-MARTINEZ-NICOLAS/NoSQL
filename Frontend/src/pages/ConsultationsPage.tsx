@@ -15,6 +15,7 @@ import { Consultation, Patient } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { patientService } from '../services/patientService';
 import { consultationService, CreateConsultationRequest, UpdateConsultationRequest } from '../services/consultationService';
+import { appointmentService } from '../services/appointmentService';
 
 export function ConsultationsPage() {
   const [activeSection, setActiveSection] = useState('consultations');
@@ -199,7 +200,13 @@ export function ConsultationsPage() {
     e.preventDefault();
     
     try {
+      console.log('Iniciando creación de consulta...');
+      console.log('Form data:', formData);
+      console.log('User:', user);
+      
       const selectedPatient = patients.find(p => p.id === formData.patientId);
+      console.log('Selected patient:', selectedPatient);
+      
       if (!selectedPatient) {
         alert('Por favor selecciona un paciente válido');
         return;
@@ -207,6 +214,7 @@ export function ConsultationsPage() {
 
       if (editingConsultation) {
         // Actualizar consulta existente
+        console.log('Actualizando consulta existente...');
         const updateData: UpdateConsultationRequest = {
           sintomas: formData.symptoms,
           diagnostico: formData.diagnosis,
@@ -232,8 +240,12 @@ export function ConsultationsPage() {
           fechaSeguimiento: formData.followUpDate ? new Date(formData.followUpDate).toISOString() : undefined
         };
 
+        console.log('Update data:', updateData);
         await consultationService.update(editingConsultation.id, updateData);
+        console.log('Consulta actualizada exitosamente');
       } else {
+        // Crear nueva consulta
+        console.log('Creando nueva consulta...');
         // Guardar solo la fecha YYYY-MM-DD
         const currentDate = new Date().toISOString().slice(0, 10);
         
@@ -268,13 +280,40 @@ export function ConsultationsPage() {
           fechaSeguimiento: formData.followUpDate ? new Date(formData.followUpDate).toISOString() : undefined
         };
 
-        await consultationService.create(createData);
+        console.log('Create data:', createData);
+        const result = await consultationService.create(createData);
+        console.log('Consulta creada exitosamente:', result);
+
+        // Si se estableció una fecha de seguimiento, crear automáticamente una cita
+        if (formData.followUpDate) {
+          try {
+            console.log('Creando cita de seguimiento automáticamente...');
+            await appointmentService.create({
+              patientId: formData.patientId,
+              optometristId: user?.id || '2',
+              date: formData.followUpDate,
+              time: '09:00', // Hora por defecto
+              type: 'follow-up',
+              notes: `Seguimiento programado desde consulta del ${currentDate}. Diagnóstico: ${formData.diagnosis}`
+            });
+            console.log('Cita de seguimiento creada exitosamente');
+          } catch (appointmentError) {
+            console.error('Error creating follow-up appointment:', appointmentError);
+            // No mostrar error al usuario, solo log
+          }
+        }
       }
 
+      console.log('Recargando datos...');
       await loadData(); // Recargar datos
       handleCloseModal();
+      console.log('Modal cerrado, operación completada');
     } catch (error) {
       console.error('Error saving consultation:', error);
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      });
       alert('Error al guardar la consulta. Por favor, intenta de nuevo.');
     }
   };

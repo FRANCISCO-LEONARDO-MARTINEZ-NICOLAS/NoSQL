@@ -7,7 +7,7 @@ import { Table } from '../components/ui/Table';
 import { Modal } from '../components/ui/Modal';
 import {
   Package, Plus, Search, Filter, Edit, Trash2,
-  AlertTriangle, TrendingUp, Eye, Glasses
+  AlertTriangle, TrendingUp, Eye, Glasses, Shield
 } from 'lucide-react';
 import { Product } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -29,10 +29,21 @@ export function InventoryPage() {
     price: '',
     stock: '',
     description: '',
-    specifications: ''
+    // Campos específicos por tipo de producto
+    material: '',
+    color: '',
+    size: '',
+    prescription: '',
+    coating: '',
+    diameter: '',
+    baseCurve: '',
+    waterContent: '',
+    replacementSchedule: '',
+    category: ''
   });
 
   const { user } = useAuth();
+  const isAdmin = user?.rol === 'admin' || user?.rol === 'Administrador';
 
   useEffect(() => {
     loadProducts();
@@ -71,7 +82,17 @@ export function InventoryPage() {
         price: product.price.toString(),
         stock: product.stock.toString(),
         description: product.description,
-        specifications: JSON.stringify(product.specifications, null, 2)
+        // Extraer datos de specifications
+        material: product.specifications.material || '',
+        color: product.specifications.color || '',
+        size: product.specifications.size || '',
+        prescription: product.specifications.prescription || '',
+        coating: product.specifications.coating || '',
+        diameter: product.specifications.diameter || '',
+        baseCurve: product.specifications.baseCurve || '',
+        waterContent: product.specifications.waterContent || '',
+        replacementSchedule: product.specifications.replacementSchedule || '',
+        category: product.specifications.category || ''
       });
     } else {
       setEditingProduct(null);
@@ -83,7 +104,16 @@ export function InventoryPage() {
         price: '',
         stock: '',
         description: '',
-        specifications: '{}'
+        material: '',
+        color: '',
+        size: '',
+        prescription: '',
+        coating: '',
+        diameter: '',
+        baseCurve: '',
+        waterContent: '',
+        replacementSchedule: '',
+        category: ''
       });
     }
     setIsModalOpen(true);
@@ -94,10 +124,43 @@ export function InventoryPage() {
     setEditingProduct(null);
   };
 
+  const buildSpecifications = () => {
+    const specs: Record<string, string> = {};
+    
+    // Campos comunes
+    if (formData.material) specs.material = formData.material;
+    if (formData.color) specs.color = formData.color;
+    if (formData.size) specs.size = formData.size;
+    
+    // Campos específicos por tipo
+    switch (formData.type) {
+      case 'frame':
+        if (formData.category) specs.category = formData.category;
+        break;
+      case 'lens':
+        if (formData.prescription) specs.prescription = formData.prescription;
+        if (formData.coating) specs.coating = formData.coating;
+        break;
+      case 'contact-lens':
+        if (formData.diameter) specs.diameter = formData.diameter;
+        if (formData.baseCurve) specs.baseCurve = formData.baseCurve;
+        if (formData.waterContent) specs.waterContent = formData.waterContent;
+        if (formData.replacementSchedule) specs.replacementSchedule = formData.replacementSchedule;
+        break;
+      case 'accessory':
+        if (formData.category) specs.category = formData.category;
+        break;
+    }
+    
+    return specs;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
+      const specifications = buildSpecifications();
+      
       if (editingProduct) {
         // Actualizar producto existente
         const updateData: UpdateProductRequest = {
@@ -108,7 +171,7 @@ export function InventoryPage() {
           price: parseFloat(formData.price),
           stock: parseInt(formData.stock),
           description: formData.description,
-          specifications: JSON.parse(formData.specifications)
+          specifications: specifications
         };
 
         await productService.update(editingProduct.id, updateData);
@@ -122,7 +185,7 @@ export function InventoryPage() {
           price: parseFloat(formData.price),
           stock: parseInt(formData.stock),
           description: formData.description,
-          specifications: JSON.parse(formData.specifications)
+          specifications: specifications
         };
 
         await productService.create(createData);
@@ -132,11 +195,16 @@ export function InventoryPage() {
       handleCloseModal();
     } catch (error) {
       console.error('Error saving product:', error);
-      alert('Error al guardar el producto. Por favor, verifica el formato de las especificaciones JSON.');
+      alert('Error al guardar el producto. Por favor, verifica los datos ingresados.');
     }
   };
 
   const handleDelete = async (productId: string) => {
+    if (!isAdmin) {
+      alert('Solo los administradores pueden eliminar productos.');
+      return;
+    }
+    
     if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
       try {
         await productService.delete(productId);
@@ -263,17 +331,152 @@ export function InventoryPage() {
             onClick={() => handleOpenModal(product)}
             className="p-1 hover:bg-green-50"
           />
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={Trash2}
-            onClick={() => handleDelete(product.id)}
-            className="p-1 hover:bg-red-50 text-red-600"
-          />
+          {isAdmin && (
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={Trash2}
+              onClick={() => handleDelete(product.id)}
+              className="p-1 hover:bg-red-50 text-red-600"
+            />
+          )}
         </div>
       )
     }
   ];
+
+  const renderSpecificationFields = () => {
+    switch (formData.type) {
+      case 'frame':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Material"
+              value={formData.material}
+              onChange={(e) => setFormData(prev => ({ ...prev, material: e.target.value }))}
+              placeholder="Ej: Acetato, Metal, Titanio"
+            />
+            <Input
+              label="Color"
+              value={formData.color}
+              onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
+              placeholder="Ej: Negro, Marrón, Azul"
+            />
+            <Input
+              label="Tamaño"
+              value={formData.size}
+              onChange={(e) => setFormData(prev => ({ ...prev, size: e.target.value }))}
+              placeholder="Ej: 54mm, Grande, Mediano"
+            />
+            <Input
+              label="Categoría"
+              value={formData.category}
+              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+              placeholder="Ej: Masculino, Femenino, Unisex"
+            />
+          </div>
+        );
+      
+      case 'lens':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Material"
+              value={formData.material}
+              onChange={(e) => setFormData(prev => ({ ...prev, material: e.target.value }))}
+              placeholder="Ej: Policarbonato, CR-39, Alto índice"
+            />
+            <Input
+              label="Color"
+              value={formData.color}
+              onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
+              placeholder="Ej: Transparente, Fotocromático, Polarizado"
+            />
+            <Input
+              label="Receta"
+              value={formData.prescription}
+              onChange={(e) => setFormData(prev => ({ ...prev, prescription: e.target.value }))}
+              placeholder="Ej: Monofocal, Bifocal, Progresivo"
+            />
+            <Input
+              label="Tratamiento"
+              value={formData.coating}
+              onChange={(e) => setFormData(prev => ({ ...prev, coating: e.target.value }))}
+              placeholder="Ej: Antirreflejo, Antirrayas, Blue Block"
+            />
+          </div>
+        );
+      
+      case 'contact-lens':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Material"
+              value={formData.material}
+              onChange={(e) => setFormData(prev => ({ ...prev, material: e.target.value }))}
+              placeholder="Ej: Hidrogel, Silicona hidrogel"
+            />
+            <Input
+              label="Diámetro"
+              value={formData.diameter}
+              onChange={(e) => setFormData(prev => ({ ...prev, diameter: e.target.value }))}
+              placeholder="Ej: 14.0mm, 14.2mm"
+            />
+            <Input
+              label="Curva Base"
+              value={formData.baseCurve}
+              onChange={(e) => setFormData(prev => ({ ...prev, baseCurve: e.target.value }))}
+              placeholder="Ej: 8.6mm, 8.8mm"
+            />
+            <Input
+              label="Contenido de Agua"
+              value={formData.waterContent}
+              onChange={(e) => setFormData(prev => ({ ...prev, waterContent: e.target.value }))}
+              placeholder="Ej: 38%, 55%, 70%"
+            />
+            <Input
+              label="Horario de Reemplazo"
+              value={formData.replacementSchedule}
+              onChange={(e) => setFormData(prev => ({ ...prev, replacementSchedule: e.target.value }))}
+              placeholder="Ej: Diario, Quincenal, Mensual"
+            />
+          </div>
+        );
+      
+      case 'accessory':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Material"
+              value={formData.material}
+              onChange={(e) => setFormData(prev => ({ ...prev, material: e.target.value }))}
+              placeholder="Ej: Microfibra, Cuero, Plástico"
+            />
+            <Input
+              label="Color"
+              value={formData.color}
+              onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
+              placeholder="Ej: Negro, Azul, Rojo"
+            />
+            <Input
+              label="Tamaño"
+              value={formData.size}
+              onChange={(e) => setFormData(prev => ({ ...prev, size: e.target.value }))}
+              placeholder="Ej: Pequeño, Mediano, Grande"
+            />
+            <Input
+              label="Categoría"
+              value={formData.category}
+              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+              placeholder="Ej: Estuche, Limpiador, Cordón"
+            />
+          </div>
+        );
+      
+      default:
+        return null;
+    }
+  };
 
   return (
     <DashboardPageWrapper>
@@ -293,13 +496,20 @@ export function InventoryPage() {
               </p>
             </div>
           </div>
-          <Button 
-            variant="primary" 
-            icon={Plus}
-            onClick={() => handleOpenModal()}
-          >
-            Nuevo Producto
-          </Button>
+          {isAdmin ? (
+            <Button 
+              variant="primary" 
+              icon={Plus}
+              onClick={() => handleOpenModal()}
+            >
+              Nuevo Producto
+            </Button>
+          ) : (
+            <div className="flex items-center space-x-2 text-neutral-500">
+              <Shield className="w-5 h-5" />
+              <span className="text-sm">Solo administradores pueden agregar productos</span>
+            </div>
+          )}
         </div>
 
         {/* Stats Cards */}
@@ -490,20 +700,12 @@ export function InventoryPage() {
               />
             </div>
             
+            {/* Campos específicos por tipo de producto */}
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                Especificaciones (JSON)
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-4">
+                Especificaciones del Producto
               </label>
-              <textarea
-                value={formData.specifications}
-                onChange={(e) => setFormData(prev => ({ ...prev, specifications: e.target.value }))}
-                rows={4}
-                className="w-full px-4 py-2.5 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white/50 dark:bg-neutral-800/50 backdrop-blur-sm text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-mono text-sm"
-                placeholder='{"material": "Acetato", "color": "Negro"}'
-              />
-              <p className="text-xs text-neutral-500 mt-1">
-                Formato JSON válido requerido
-              </p>
+              {renderSpecificationFields()}
             </div>
             
             <div className="flex justify-end space-x-3 pt-4">
